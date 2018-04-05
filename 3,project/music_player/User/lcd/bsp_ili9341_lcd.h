@@ -28,7 +28,7 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^0*2 = 0X6800 0000 + 0X2 = 0X6800 0002
 #define      FSMC_Addr_ILI9341_DATA        ( ( uint32_t ) 0x60020000 )
 
 //由片选引脚决定的NOR/SRAM块
-#define      FSMC_Bank1_NORSRAMx           FSMC_Bank1_NORSRAM1
+#define      FSMC_Bank1_NORSRAMx           FSMC_Bank1_NORSRAM3
 
 
 /******************************* ILI9341 显示屏8080通讯引脚定义 ***************************/
@@ -158,8 +158,8 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^0*2 = 0X6800 0000 + 0X2 = 0X6800 0002
 
 
 /***************** ILI934 显示屏全屏默认（扫描方向为1时）最大宽度和最大高度 *********************/
-#define      macILI9341_Default_Max_Width		240     //起始点的X坐标
-#define      macILI9341_Default_Max_Heigth		320     //起始点的Y坐标
+#define      macILI9341_Default_Max_Width		320     //起始点的X坐标
+#define      macILI9341_Default_Max_Heigth		240     //起始点的Y坐标
 
 
 
@@ -212,12 +212,12 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^0*2 = 0X6800 0000 + 0X2 = 0X6800 0002
 
 
 /********************************** 声明 ILI934 函数 ***************************************/
-void                     ILI9341_Init                    ( void );
-void                     ILI9341_Rst                     ( void );
-void                     ILI9341_BackLed_Control         ( FunctionalState enumState );
 extern __inline void            ILI9341_Write_Cmd               ( uint16_t usCmd );
 extern __inline void            ILI9341_Write_Data              ( uint16_t usData );
 extern __inline uint16_t        ILI9341_Read_Data               ( void );
+void                     ILI9341_Init                    ( void );
+void                     ILI9341_Rst                     ( void );
+void                     ILI9341_BackLed_Control         ( FunctionalState enumState );
 void                     ILI9341_GramScan                ( uint8_t ucOtion );
 void                     ILI9341_OpenWindow              ( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHeight );
 void                     ILI9341_Clear                   ( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHeight, uint16_t usColor );

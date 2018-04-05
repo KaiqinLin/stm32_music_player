@@ -1,5 +1,6 @@
 #include "./lcd/bsp_lcd.h"
 #include "./lcd/bsp_ili9341_lcd.h"
+#include "./systick/bsp_Systick.h"
 
 
 
@@ -11,7 +12,8 @@
 void LCD_Init ( void )
 {
 	ILI9341_Init ();
-  ILI9341_Clear(0, 0, 320, 240, macWHITE);
+  Delay_10us(1000);
+  ILI9341_Clear(0, 0, 320, 240, macBLACK);
 	
 	#if macLCD_XPT2046_ENABLE
 	

@@ -211,7 +211,7 @@ static void ILI9341_FSMC_Config ( void )
 	//数据保持时间（DATAST）+ 1个HCLK = 5/168M=30ns	
 	readWriteTiming.FSMC_DataSetupTime         = 0x04;	 //数据建立时间
 	//选择控制的模式
-	//模式B,异步NOR FLASH模式，与ILI9806G的8080时序匹配
+	//模式B,异步NOR FLASH模式，与ILI9341的8080时序匹配
 	readWriteTiming.FSMC_AccessMode            = FSMC_AccessMode_B;	
 	
 	/*以下配置与模式B无关*/
@@ -378,7 +378,7 @@ static void ILI9341_REG_Config ( void )
 	/* memory access control set */
 	macDEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0x36 ); 	
-	ILI9341_Write_Data ( 0xC8 );    /*竖屏  左上角到 (起点)到右下角 (终点)扫描方式*/
+	ILI9341_Write_Data ( 0xA8 );    /*竖屏  左上角到 (起点)到右下角 (终点)扫描方式*/
 	macDEBUG_DELAY ();
 	
 	/* column address control set */

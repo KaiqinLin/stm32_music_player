@@ -40,7 +40,7 @@ int main(void)
 //  }
 //  
 //  /* 初始化系统滴答定时器 */
-//  SysTick_Init();  
+  SysTick_Init();  
 //  printf("MP3播放器\n");
 //  
 //  /* 检测WM8978芯片，此函数会自动配置CPU的GPIO */
@@ -51,7 +51,7 @@ int main(void)
 //  }
 //  printf("初始化WM8978成功\n");
   LCD_Init();
-  ILI9341_DrawLine(0,0,240,240,macRED);
+  ILI9341_DispString_EN(0, 0, "fafa", macWHITE, macRED);
 //	RecorderDemo();
   while(1)
   {    
