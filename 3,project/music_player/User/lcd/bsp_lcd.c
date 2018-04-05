@@ -19,8 +19,8 @@ void LCD_Init ( void )
 	
 	  XPT2046_Init ();
 	#else
-    ILI9341_Clear(0, 0, 320, 240, macYELLOW);
-    while(1);
+//    ILI9341_Clear(0, 0, 320, 240, macYELLOW);
+//    while(1);
 	#endif
 	
 }

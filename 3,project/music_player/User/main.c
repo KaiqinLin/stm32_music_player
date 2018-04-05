@@ -10,9 +10,9 @@
 //#include "./test/Recorder.h"
 #include "./lcd/bsp_lcd.h"
 #include "./test/lcd_test.h"
+#include "./malloc/malloc.h"
+#include "GUI.h"
 
-
-FATFS fs;
 
 /**
   * @brief  主函数
@@ -21,7 +21,6 @@ FATFS fs;
   */
 int main(void)
 {
-//  FRESULT result;
 //    /* 程序来到main函数之前，启动文件：statup_stm32f429xx.s已经调用
 //    * SystemInit()函数把系统时钟初始化成180MHZ
 //    * SystemInit()在system_stm32f4xx.c中定义
@@ -29,33 +28,21 @@ int main(void)
 //    */
 //      /* add your code here ^_^. */
 //    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-//    Debug_USART_Config();
-//    LED_GPIO_Config();
-
-//  /* 挂载SD卡文件系统 */
-//  result = f_mount(&fs,"0:",1);  //挂载文件系统
-//  if(result!=FR_OK)
-//  {
-//    printf("\n SD卡文件系统挂载失败\n");
-//    while(1);
-//  }
-//  
+    Debug_USART_Config();
 //  /* 初始化系统滴答定时器 */
-  SysTick_Init();  
-//  printf("MP3播放器\n");
-//  
-//  /* 检测WM8978芯片，此函数会自动配置CPU的GPIO */
-//  if (wm8978_Init()==0)
-//  {
-//    printf("检测不到WM8978芯片!!!\n");
-//    while (1);  /* 停机 */
-//  }
-//  printf("初始化WM8978成功\n");
-  lcd_test_case();
-//	RecorderDemo();
+  SysTick_Init(); 
+  LCD_Init();
+  mem_init(SRAMIN);
+
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
+  GUI_Init();
+  GUI_SetBkColor(GUI_BLUE);
+  GUI_SetColor(GUI_YELLOW);
+  GUI_Clear();
+  GUI_SetFont(&GUI_Font24_ASCII);
+  GUI_DispStringAt("ChenYiFaer", 0, 0);
   while(1)
   {    
-//    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
   }
 
 }
