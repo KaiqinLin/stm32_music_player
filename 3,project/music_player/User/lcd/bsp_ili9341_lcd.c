@@ -199,7 +199,7 @@ static void ILI9341_GPIO_Config ( void )
   * @retval нч
   */
 static void ILI9341_FSMC_Config ( void )
-{
+	{
 	FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
 	FSMC_NORSRAMTimingInitTypeDef  readWriteTiming; 	
 	
@@ -569,6 +569,23 @@ void ILI9341_GramScan ( uint8_t ucOption )
 		
 	    break;
 		
+    case 5:
+
+			ILI9341_Write_Cmd ( 0x36 ); 
+			ILI9341_Write_Data ( 0xA8 );	
+			ILI9341_Write_Cmd ( macCMD_SetCoordinateX ); 
+			ILI9341_Write_Data ( 0x00 );
+			ILI9341_Write_Data ( 0x00 );
+			ILI9341_Write_Data ( 0x00 );
+			ILI9341_Write_Data ( 0xEF );	
+
+			ILI9341_Write_Cmd ( macCMD_SetCoordinateY ); 
+			ILI9341_Write_Data ( 0x00 );
+			ILI9341_Write_Data ( 0x00 );
+			ILI9341_Write_Data ( 0x01 );
+			ILI9341_Write_Data ( 0x3F );		
+      break;
+
 	}
 	
 	

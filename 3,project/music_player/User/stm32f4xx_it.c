@@ -30,6 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 #include "./systick/bsp_SysTick.h"
+#include "./lcd/bsp_xpt2046_lcd.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -151,6 +152,17 @@ void SysTick_Handler(void)
 /*  file (startup_stm32f4xx.s).                                               */
 /******************************************************************************/
 
+void macXPT2046_EXTI_INT_FUNCTION ( void )
+{ 
+  if ( EXTI_GetITStatus ( macXPT2046_EXTI_LINE ) != RESET )
+  {
+    ucXPT2046_TouchFlag = 1;
+
+    EXTI_ClearITPendingBit ( macXPT2046_EXTI_LINE );
+
+  }
+
+}
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

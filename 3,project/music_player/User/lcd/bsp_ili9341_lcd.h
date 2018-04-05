@@ -158,8 +158,8 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^0*2 = 0X6800 0000 + 0X2 = 0X6800 0002
 
 
 /***************** ILI934 显示屏全屏默认（扫描方向为1时）最大宽度和最大高度 *********************/
-#define      macILI9341_Default_Max_Width		320     //起始点的X坐标
-#define      macILI9341_Default_Max_Heigth		240     //起始点的Y坐标
+#define      macILI9341_Default_Max_Width		240     //起始点的X坐标
+#define      macILI9341_Default_Max_Heigth		320     //起始点的Y坐标
 
 
 

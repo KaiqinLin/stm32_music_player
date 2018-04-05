@@ -1,5 +1,5 @@
-#include "bsp_xpt2046_lcd.h"
-#include "bsp_ili9341_lcd.h"
+#include "./lcd/bsp_xpt2046_lcd.h"
+#include "./lcd/bsp_ili9341_lcd.h"
 #include <stdio.h> 
 #include <string.h>
 
@@ -78,18 +78,20 @@ static void XPT2046_EXTI_Config ( void )
 
 	
 	/* config the extiline clock and AFIO clock */
-	RCC_APB2PeriphClockCmd ( macXPT2046_EXTI_GPIO_CLK | RCC_APB2Periph_AFIO, ENABLE );
+	RCC_AHB1PeriphClockCmd ( macXPT2046_EXTI_GPIO_CLK, ENABLE );
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 												
 	/* config the NVIC */
 	XPT2046_EXTI_NVIC_Config ();
 
 	/* EXTI line gpio config*/	
   GPIO_InitStructure.GPIO_Pin = macXPT2046_EXTI_GPIO_PIN;       
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	 // 上拉输入
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;	 // 上拉输入
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(macXPT2046_EXTI_GPIO_PORT, &GPIO_InitStructure);
 
 	/* EXTI line mode config */
-  GPIO_EXTILineConfig(macXPT2046_EXTI_SOURCE_PORT, macXPT2046_EXTI_SOURCE_PIN); 
+  SYSCFG_EXTILineConfig(macXPT2046_EXTI_SOURCE_PORT, macXPT2046_EXTI_SOURCE_PIN); 
   EXTI_InitStructure.EXTI_Line = macXPT2046_EXTI_LINE;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //下降沿中断
@@ -111,25 +113,34 @@ static void XPT2046_GPIO_SPI_Config ( void )
 	
 
   /* 开启GPIO时钟 */
-  RCC_APB2PeriphClockCmd ( macXPT2046_SPI_GPIO_CLK, ENABLE );
+  RCC_AHB1PeriphClockCmd ( macXPT2046_SPI_GPIO_CLK, ENABLE );
 
   /* 模拟SPI GPIO初始化 */          
-  GPIO_InitStructure.GPIO_Pin=macXPT2046_SPI_CLK_PIN;
-  GPIO_InitStructure.GPIO_Speed=GPIO_Speed_10MHz ;	  
-  GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Pin   = macXPT2046_SPI_CLK_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz ;	  
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(macXPT2046_SPI_CLK_PORT, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = macXPT2046_SPI_MOSI_PIN;
+  GPIO_InitStructure.GPIO_Pin   = macXPT2046_SPI_MOSI_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz ;	  
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(macXPT2046_SPI_MOSI_PORT, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = macXPT2046_SPI_MISO_PIN; 
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz ;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;      
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz ;	  
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
   GPIO_Init(macXPT2046_SPI_MISO_PORT, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = macXPT2046_SPI_CS_PIN; 
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz ;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;      
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz ;	  
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(macXPT2046_SPI_CS_PORT, &GPIO_InitStructure); 
    
   /* 拉低片选，选择XPT2046 */
@@ -579,7 +590,8 @@ uint8_t XPT2046_Touch_Calibrate ( void )
 	    usScreenWidth = macILI9341_Default_Max_Width;
 	    usScreenHeigth = macILI9341_Default_Max_Heigth;
 
-	  #elif ( macXPT2046_Coordinate_GramScan == 2 ) || ( macXPT2046_Coordinate_GramScan == 3 )
+	  #elif ( macXPT2046_Coordinate_GramScan == 2 ) || ( macXPT2046_Coordinate_GramScan == 3 ) \
+          || ( macXPT2046_Coordinate_GramScan == 5 )
 	    usScreenWidth = macILI9341_Default_Max_Heigth;
 	    usScreenHeigth = macILI9341_Default_Max_Width;
 	

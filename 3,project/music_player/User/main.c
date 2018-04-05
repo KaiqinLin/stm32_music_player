@@ -9,6 +9,7 @@
 #include "./test/mp3Player.h"
 //#include "./test/Recorder.h"
 #include "./lcd/bsp_lcd.h"
+#include "./test/lcd_test.h"
 
 
 FATFS fs;
@@ -50,8 +51,7 @@ int main(void)
 //    while (1);  /* 停机 */
 //  }
 //  printf("初始化WM8978成功\n");
-  LCD_Init();
-  ILI9341_DispString_EN(0, 0, "fafa", macWHITE, macRED);
+  lcd_test_case();
 //	RecorderDemo();
   while(1)
   {    

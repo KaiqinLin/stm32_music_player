@@ -7,10 +7,10 @@
 
 
 /******************************* XPT2046 触摸屏中断引脚定义 ***************************/
-#define             macXPT2046_EXTI_GPIO_CLK                        RCC_APB2Periph_GPIOE     
-#define             macXPT2046_EXTI_GPIO_PORT                       GPIOE   
+#define             macXPT2046_EXTI_GPIO_CLK                        RCC_AHB1Periph_GPIOC     
+#define             macXPT2046_EXTI_GPIO_PORT                       GPIOC   
 #define             macXPT2046_EXTI_GPIO_PIN                        GPIO_Pin_4
-#define             macXPT2046_EXTI_SOURCE_PORT                     GPIO_PortSourceGPIOE
+#define             macXPT2046_EXTI_SOURCE_PORT                     EXTI_PortSourceGPIOC
 #define             macXPT2046_EXTI_SOURCE_PIN                      GPIO_PinSource4
 #define             macXPT2046_EXTI_LINE                            EXTI_Line4
 #define             macXPT2046_EXTI_IRQ                             EXTI4_IRQn
@@ -22,19 +22,19 @@
 
 
 /******************************* XPT2046 触摸屏模拟SPI引脚定义 ***************************/
-#define             macXPT2046_SPI_GPIO_CLK                         RCC_APB2Periph_GPIOE| RCC_APB2Periph_GPIOD
+#define             macXPT2046_SPI_GPIO_CLK                         RCC_AHB1Periph_GPIOA
 
-#define             macXPT2046_SPI_CS_PIN		                        GPIO_Pin_13
-#define             macXPT2046_SPI_CS_PORT		                      GPIOD
+#define             macXPT2046_SPI_CS_PIN		                        GPIO_Pin_15
+#define             macXPT2046_SPI_CS_PORT		                      GPIOA
 
-#define	            macXPT2046_SPI_CLK_PIN	                        GPIO_Pin_0
-#define             macXPT2046_SPI_CLK_PORT	                        GPIOE
+#define	            macXPT2046_SPI_CLK_PIN	                        GPIO_Pin_5
+#define             macXPT2046_SPI_CLK_PORT	                        GPIOA
 
-#define	            macXPT2046_SPI_MOSI_PIN	                        GPIO_Pin_2
-#define	            macXPT2046_SPI_MOSI_PORT	                      GPIOE
+#define	            macXPT2046_SPI_MOSI_PIN	                        GPIO_Pin_7
+#define	            macXPT2046_SPI_MOSI_PORT	                      GPIOA
 
-#define	            macXPT2046_SPI_MISO_PIN	                        GPIO_Pin_3
-#define	            macXPT2046_SPI_MISO_PORT	                      GPIOE
+#define	            macXPT2046_SPI_MISO_PIN	                        GPIO_Pin_6
+#define	            macXPT2046_SPI_MISO_PORT	                      GPIOA
 
 
 #define             macXPT2046_CS_ENABLE()                          GPIO_SetBits ( macXPT2046_SPI_CS_PORT, macXPT2046_SPI_CS_PIN )    
@@ -51,7 +51,7 @@
 
 
 /******************************* XPT2046 触摸屏参数定义 ***************************/
-#define             macXPT2046_Coordinate_GramScan                  2               //选择 XPT2046 触摸屏的坐标相对于何种扫描方向
+#define             macXPT2046_Coordinate_GramScan                  5               //选择 XPT2046 触摸屏的坐标相对于何种扫描方向
 #define             macXPT2046_THRESHOLD_CalDiff                    2               //校准触摸屏时触摸坐标的AD值相差门限 
 
 #define	            macXPT2046_CHANNEL_X 	                          0x90 	          //通道Y+的选择控制字	
