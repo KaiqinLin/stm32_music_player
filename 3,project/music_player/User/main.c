@@ -10,7 +10,6 @@
 //#include "./test/Recorder.h"
 #include "./lcd/bsp_lcd.h"
 #include "./test/lcd_test.h"
-#include "./malloc/malloc.h"
 #include "GUI.h"
 
 
@@ -32,15 +31,11 @@ int main(void)
 //  /* 初始化系统滴答定时器 */
   SysTick_Init(); 
   LCD_Init();
-  mem_init(SRAMIN);
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
   GUI_Init();
-  GUI_SetBkColor(GUI_BLUE);
-  GUI_SetColor(GUI_YELLOW);
-  GUI_Clear();
-  GUI_SetFont(&GUI_Font24_ASCII);
-  GUI_DispStringAt("ChenYiFaer", 0, 0);
+
+  GUIDEMO_Main();
   while(1)
   {    
   }

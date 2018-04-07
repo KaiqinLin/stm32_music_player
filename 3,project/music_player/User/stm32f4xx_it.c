@@ -32,6 +32,8 @@
 #include "./systick/bsp_SysTick.h"
 #include "./lcd/bsp_xpt2046_lcd.h"
 
+extern __IO int32_t OS_TimeMS;
+
 /** @addtogroup Template_Project
   * @{
   */
@@ -143,6 +145,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   TimingDelay_Decrement();
+  OS_TimeMS ++;
 }
 
 /******************************************************************************/

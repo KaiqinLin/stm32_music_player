@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F40_41xxx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\..\Libraries\CMSIS\Include;..\..\User;..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\..\User\fatfs;..\..\User\mp3\pub;..\..\User\mp3\real</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\..\Libraries\CMSIS\Include;..\..\User;..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\..\User\fatfs;..\..\User\mp3\pub;..\..\User\mp3\real;..\..\User\emwin\STemWin\Config;..\..\User\emwin\STemWin\inc;..\..\User\emwin\Demo</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -725,6 +725,9 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>BSP</GroupName>
+        </Group>
+        <Group>
           <GroupName>USER</GroupName>
           <Files>
             <File>
@@ -776,6 +779,21 @@
               <FileName>bsp_xpt2046_lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\lcd\bsp_xpt2046_lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_ili9341_lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\lcd\bsp_ili9341_lcd.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>TEST</GroupName>
+          <Files>
+            <File>
+              <FileName>sdio_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\test\sdio_test.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -821,31 +839,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-            <File>
-              <FileName>bsp_ili9341_lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\lcd\bsp_ili9341_lcd.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>DOC</GroupName>
-          <Files>
-            <File>
-              <FileName>工程说明.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Doc\工程说明.txt</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>TEST</GroupName>
-          <Files>
-            <File>
-              <FileName>sdio_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\test\sdio_test.c</FilePath>
             </File>
             <File>
               <FileName>mp3Player.c</FileName>
@@ -901,6 +894,11 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+            <File>
+              <FileName>lcd_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\test\lcd_test.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1006,6 +1004,171 @@
               <FileName>asmpoly_thumb2.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\User\mp3\real\arm\asmpoly_thumb2.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>STemWin</GroupName>
+          <Files>
+            <File>
+              <FileName>GUIConf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\STemWin\Config\GUIConf.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCDConf_FlexColor_Template.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\STemWin\Config\LCDConf_FlexColor_Template.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_X.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\STemWin\OS\GUI_X.c</FilePath>
+            </File>
+            <File>
+              <FileName>STemWin532_CM4_Keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\User\emwin\STemWin\Lib\STemWin532_CM4_Keil.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>STemWin_Demo</GroupName>
+          <Files>
+            <File>
+              <FileName>GUIDEMO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_AntialiasedText.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_AntialiasedText.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Automotive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Automotive.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_BarGraph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_BarGraph.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Bitmap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Bitmap.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_ColorBar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_ColorBar.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Conf.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Cursor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Cursor.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Fading.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Fading.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Graph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Graph.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_IconView.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_IconView.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_ImageFlow.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_ImageFlow.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Intro.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Intro.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Listview.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Listview.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_RadialMenu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_RadialMenu.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Resource.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Resource.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Skinning.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Skinning.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Speed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Speed.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Speedometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Speedometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Start.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Start.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_TransparentDialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_TransparentDialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Treeview.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_Treeview.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_VScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_VScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_WashingMachine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_WashingMachine.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_ZoomAndRotate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\emwin\Demo\GUIDEMO_ZoomAndRotate.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DOC</GroupName>
+          <Files>
+            <File>
+              <FileName>工程说明.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Doc\工程说明.txt</FilePath>
             </File>
           </Files>
         </Group>
