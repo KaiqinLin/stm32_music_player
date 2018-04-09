@@ -11,7 +11,6 @@
 #include "ff.h"
 #include "./test/sdio_test.h"
 #include "./test/lcd_test.h"
-//#include "./test/Recorder.h"
 #include "GUI.h"
 
 /**************** Private marco    *******************/
@@ -74,8 +73,7 @@ int main(void)
   while(1)
   {
     
-//    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
-    RecorderDemo();
+    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
   }
 
 }
