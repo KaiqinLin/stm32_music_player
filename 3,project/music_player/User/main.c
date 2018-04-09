@@ -4,6 +4,7 @@
 #include "./led/bsp_led.h"
 #include "./wm8978/bsp_wm8978.h"
 #include "./systick/bsp_systick.h"
+#include "./key/bsp_key.h" 
 #include "./test/mp3Player.h"
 #include "./lcd/bsp_lcd.h"
 #include "common.h"
@@ -35,6 +36,7 @@ void bsp_init(void)
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
   LED_GPIO_Config();
+  Key_GPIO_Config();
   SysTick_Init();
   /* Initialize th xpt2046 and ili9341 as also as the periph */
   LCD_Init();
@@ -72,7 +74,8 @@ int main(void)
   while(1)
   {
     
-    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
+//    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
+    RecorderDemo();
   }
 
 }

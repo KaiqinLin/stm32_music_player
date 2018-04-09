@@ -19,6 +19,7 @@
 #include "./wm8978/bsp_wm8978.h"
 #include "ff.h" 
 #include "./test/Recorder.h"
+#include "./key/bsp_key.h" 
 
 /* 录音文件存放路径 */
 #define RECORDERDIR	"0:/recorder"
@@ -35,7 +36,7 @@ static uint32_t wavsize=0;         /* wav音频数据大小 */
 uint16_t buffer0[RECBUFFER_SIZE];  /* 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
 uint16_t buffer1[RECBUFFER_SIZE];  /* 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
 
-FIL file;											/* file objects */
+FIL file_recorder;											/* file objects */
 FRESULT result; 
 UINT bw;            					/* File R/W count */
 
@@ -67,7 +68,6 @@ void RecorderDemo(void)
 {
 	uint8_t i;
 	uint8_t ucRefresh;	/* 通过串口打印相关信息标志 */
-  uint32_t timer = 0;
 	DIR dir;
 	
 	Recorder.ucStatus=STA_IDLE;    /* 开始设置为空闲状态  */
@@ -139,16 +139,16 @@ void RecorderDemo(void)
 		if(Recorder.ucStatus == STA_IDLE)
 		{				
 			/*  KEY2开始录音  */
-			if(timer == 0)
+			if(Key_Scan(KEY2_GPIO_PORT,KEY2_PIN)==KEY_ON)
 			{
 				/* 寻找合适文件名 */
 				for(i=1;i<0xff;++i)
 				{
 					sprintf(recfilename,"0:/recorder/rec%03d.wav",i);
-					result=f_open(&file,(const TCHAR *)recfilename,FA_READ);
+					result=f_open(&file_recorder,(const TCHAR *)recfilename,FA_READ);
 					if(result==FR_NO_FILE)break;					
 				}
-				f_close(&file);
+				f_close(&file_recorder);
 				
 				if(i==0xff)
 				{
@@ -160,7 +160,7 @@ void RecorderDemo(void)
 				ucRefresh = 1;
 			}
 			/*  TouchPAD开始回放录音  */
-			if(timer == 0x01FF00FF)
+			if(Key_Scan(KEY3_GPIO_PORT,KEY3_PIN)==KEY_ON)
 			{			
 				/* 开始回放 */
 				StartPlay(recfilename);
@@ -170,7 +170,7 @@ void RecorderDemo(void)
 		else
 		{			
 			/*  KEY1停止录音或回放  */
-			if(timer >= 0x01FF0000)
+			if(Key_Scan(KEY4_GPIO_PORT,KEY4_PIN)==KEY_ON)
 			{
 				/* 对于录音，需要把WAV文件内容填充完整 */
 				if(Recorder.ucStatus == STA_RECORDING)
@@ -179,9 +179,9 @@ void RecorderDemo(void)
 					I2S_Play_Stop();
 					rec_wav.size_8=wavsize+36;
 					rec_wav.datasize=wavsize;
-					result=f_lseek(&file,0);
-					result=f_write(&file,(const void *)&rec_wav,sizeof(rec_wav),&bw);
-					result=f_close(&file);
+					result=f_lseek(&file_recorder,0);
+					result=f_write(&file_recorder,(const void *)&rec_wav,sizeof(rec_wav),&bw);
+					result=f_close(&file_recorder);
 					printf("录音结束\r\n");
 				}
 				ucRefresh = 1;
@@ -198,23 +198,23 @@ void RecorderDemo(void)
 			{
 				case STA_RECORDING:  // 录音功能，写入数据到文件
 						if(bufflag==0)
-							result=f_write(&file,buffer0,RECBUFFER_SIZE*2,(UINT*)&bw);//写入文件							
+							result=f_write(&file_recorder,buffer0,RECBUFFER_SIZE*2,(UINT*)&bw);//写入文件							
 						else
-							result=f_write(&file,buffer1,RECBUFFER_SIZE*2,(UINT*)&bw);//写入文件
+							result=f_write(&file_recorder,buffer1,RECBUFFER_SIZE*2,(UINT*)&bw);//写入文件
 						wavsize+=RECBUFFER_SIZE*2;	
 					break;
 				case STA_PLAYING:   // 回放功能，读取数据到播放缓冲区
 						if(bufflag==0)
-							result = f_read(&file,buffer0,RECBUFFER_SIZE*2,&bw);	
+							result = f_read(&file_recorder,buffer0,RECBUFFER_SIZE*2,&bw);	
 						else
-							result = f_read(&file,buffer1,RECBUFFER_SIZE*2,&bw);
+							result = f_read(&file_recorder,buffer1,RECBUFFER_SIZE*2,&bw);
 						/* 播放完成或读取出错停止工作 */
-						if((result!=FR_OK)||(file.fptr==file.obj.objsize))
+						if((result!=FR_OK)||(file_recorder.fptr==file_recorder.obj.objsize))
 						{
 							printf("播放完或者读取出错退出...\r\n");
 							I2S_Play_Stop();
-							file.fptr=0;
-							f_close(&file);
+							file_recorder.fptr=0;
+							f_close(&file_recorder);
 							Recorder.ucStatus = STA_IDLE;		/* 待机状态 */
 							I2S_Stop();		/* 停止I2S录音和放音 */
 							wm8978_Reset();	/* 复位WM8978到复位状态 */							
@@ -222,7 +222,7 @@ void RecorderDemo(void)
 					break;
 			}			
 		}
-		timer ++;
+		
 	}
 }
 
@@ -235,19 +235,19 @@ static void StartPlay(const char *filename)
 {
 	printf("当前播放文件 -> %s\n",filename);
 	
-	result=f_open(&file,filename,FA_READ);
+	result=f_open(&file_recorder,filename,FA_READ);
 	if(result!=FR_OK)
 	{
 		printf("打开音频文件失败!!!->%d\r\n",result);
-		result = f_close (&file);
+		result = f_close (&file_recorder);
 		Recorder.ucStatus = STA_ERR;
 		return;
 	}
 	//读取WAV文件头
-	result = f_read(&file,&rec_wav,sizeof(rec_wav),&bw);
+	result = f_read(&file_recorder,&rec_wav,sizeof(rec_wav),&bw);
 	//先读取音频数据到缓冲区
-	result = f_read(&file,(uint16_t *)buffer0,RECBUFFER_SIZE*2,&bw);
-	result = f_read(&file,(uint16_t *)buffer1,RECBUFFER_SIZE*2,&bw);
+	result = f_read(&file_recorder,(uint16_t *)buffer0,RECBUFFER_SIZE*2,&bw);
+	result = f_read(&file_recorder,(uint16_t *)buffer1,RECBUFFER_SIZE*2,&bw);
 	
 	Delay_ms(10);	/* 延迟一段时间，等待I2S中断结束 */
 	I2S_Stop();			/* 停止I2S录音和放音 */
@@ -281,18 +281,18 @@ static void StartPlay(const char *filename)
 static void StartRecord(const char *filename)
 {
 	printf("当前录音文件 -> %s\n",filename);
-	result=f_open(&file,filename,FA_CREATE_ALWAYS|FA_WRITE);
+	result=f_open(&file_recorder,filename,FA_CREATE_ALWAYS|FA_WRITE);
 	if(result!=FR_OK)
 	{
 		printf("Open wavfile fail!!!->%d\r\n",result);
-		result = f_close (&file);
+		result = f_close (&file_recorder);
 		Recorder.ucStatus = STA_ERR;
 		return;
 	}
 	
 	// 写入WAV文件头，这里必须写入写入后文件指针自动偏移到sizeof(rec_wav)位置，
 	// 接下来写入音频数据才符合格式要求。
-	result=f_write(&file,(const void *)&rec_wav,sizeof(rec_wav),&bw);
+	result=f_write(&file_recorder,(const void *)&rec_wav,sizeof(rec_wav),&bw);
 	
 	Delay_ms(10);		/* 延迟一段时间，等待I2S中断结束 */
 	I2S_Stop();			/* 停止I2S录音和放音 */

@@ -39,11 +39,11 @@ cscope.po.out
 *.axf
 
 
-Template/MDK-ARM/JLinkLog.txt
-Template/MDK-ARM/JLinkSetting.ini
-Template/MDK-ARM/Demo/*
-Template/MDK-ARM/Template.uvguix.*
-Template/MDK-ARM/startup_stm32f427xx.lst
-Template/MDK-ARM/RTE/RTE_Components.h
+3,project/music_player/Project/RVMDK(uv5)/JLinkLog.txt
+3,project/music_player/Project/RVMDK(uv5)/JLinkSetting.ini
+3,project/music_player/Project/RVMDK(uv5)/Demo/*
+3,project/music_player/Project/RVMDK(uv5)/Template.uvguix.*
+3,project/music_player/Project/RVMDK(uv5)/startup_stm32f427xx.lst
+3,project/music_player/Project/RVMDK(uv5)/RTE/RTE_Components.h
 *.uvoptx
 *.uvprojx
