@@ -730,7 +730,77 @@ uint8_t XPT2046_Get_TouchedPoint ( strType_XPT2046_Coordinate * pDisplayCoordina
   
 } 
 
+uint16_t XPT2046_ReadADC_Smooth_XOY(uint8_t ucChannel)
+{
+  uint8_t ucCount = 0;
+  uint16_t sADC_dat = 0;
+  
+  uint16_t sBufferArray [ 9 ] = { 0 };
 
+  int32_t lAverage  [ 3 ], lDifference [ 3 ];
+
+  do {
+
+    sBufferArray[ ucCount ] = XPT2046_ReadAdc(ucChannel);
+    
+    ucCount ++; 
+       
+  } while ( ( macXPT2046_EXTI_Read() == macXPT2046_EXTI_ActiveLevel ) && ( ucCount < 9 ) );   //用户点击触摸屏时即TP_INT_IN信号为低 并且 ucCount<6*/
+   
+  
+  /*如果触笔弹起*/
+  if ( macXPT2046_EXTI_Read() != macXPT2046_EXTI_ActiveLevel )
+    ucXPT2046_TouchFlag = 0;      //触摸中断标志复位    
+
+  
+  /* 如果成功采样9次,进行滤波 */ 
+  if ( ucCount == 9 )                   
+  {  
+    /* 为减少运算量,分别分3组取平均值 */
+    lAverage  [ 0 ] = ( sBufferArray[ 0 ] + sBufferArray[ 1 ] + sBufferArray[ 2 ] ) / 3;
+    lAverage  [ 1 ] = ( sBufferArray[ 3 ] + sBufferArray[ 4 ] + sBufferArray[ 5 ] ) / 3;
+    lAverage  [ 2 ] = ( sBufferArray[ 6 ] + sBufferArray[ 7 ] + sBufferArray[ 8 ] ) / 3;
+    
+    /* 计算3组数据的差值 */
+    lDifference [ 0 ] = lAverage  [ 0 ]-lAverage  [ 1 ];
+    lDifference [ 1 ] = lAverage  [ 1 ]-lAverage  [ 2 ];
+    lDifference [ 2 ] = lAverage  [ 2 ]-lAverage  [ 0 ];
+    
+    /* 对上述差值取绝对值 */
+    lDifference [ 0 ] = lDifference [ 0 ]>0?lDifference [ 0 ]: ( -lDifference [ 0 ] );
+    lDifference [ 1 ] = lDifference [ 1 ]>0?lDifference [ 1 ]: ( -lDifference [ 1 ] );
+    lDifference [ 2 ] = lDifference [ 2 ]>0?lDifference [ 2 ]: ( -lDifference [ 2 ] );
+    
+    
+    /* 判断绝对差值是否都超过差值门限，如果这3个绝对差值都超过门限值，则判定这次采样点为野点,抛弃采样点，差值门限取为2 */
+    if (  lDifference [ 0 ] > macXPT2046_THRESHOLD_CalDiff  &&  lDifference [ 1 ] > macXPT2046_THRESHOLD_CalDiff  &&  lDifference [ 2 ] > macXPT2046_THRESHOLD_CalDiff  ) 
+      return 0;
+    
+    
+    /* 计算它们的平均值，同时赋值给sADC_dat */ 
+    if ( lDifference [ 0 ] < lDifference [ 1 ] )
+    {
+      if ( lDifference [ 2 ] < lDifference [ 0 ] ) 
+        sADC_dat = ( lAverage  [ 0 ] + lAverage  [ 2 ] ) / 2;
+      else 
+        sADC_dat = ( lAverage  [ 0 ] + lAverage  [ 1 ] ) / 2;  
+    }
+    
+    else if ( lDifference [ 2 ] < lDifference [ 1 ] ) 
+      sADC_dat = ( lAverage  [ 0 ] + lAverage  [ 2 ] ) / 2;
+    
+    else 
+      sADC_dat = ( lAverage  [ 1 ] + lAverage  [ 2 ] ) / 2;
+    
+    return sADC_dat;
+  } else if ( ucCount > 1 ) {
+    sADC_dat = sBufferArray [ 0 ];
+  
+    return sADC_dat;
+  }  
+  
+  return sADC_dat; 
+}
 
 
 

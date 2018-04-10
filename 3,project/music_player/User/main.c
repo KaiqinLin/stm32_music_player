@@ -72,8 +72,8 @@ int main(void)
 
   while(1)
   {
-    
-    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
+    lcd_test_case();
+//    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
   }
 
 }
