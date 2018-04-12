@@ -63,6 +63,10 @@ Purpose     : Display controller configuration (single layer)
 **********************************************************************
 */
 
+#define TOUCH_AD_TOP       3792
+#define TOUCH_AD_BOTTOM    0165
+#define TOUCH_AD_LEFT      3719
+#define TOUCH_AD_RIGHT     222
 //
 // Physical display size
 //
@@ -109,7 +113,7 @@ Purpose     : Display controller configuration (single layer)
 */
 static void LcdWriteReg(U16 Data) {
   // ... TBD by user
-	* ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = Data;	//modify by fire
+  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = Data;  //modify by fire
 }
 
 /********************************************************************
@@ -120,8 +124,8 @@ static void LcdWriteReg(U16 Data) {
 *   Writes a value to a display register
 */
 static void LcdWriteData(U16 Data) {
-  // ... TBD by user								
-	* ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = Data;//modify by fire
+  // ... TBD by user                
+  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = Data;//modify by fire
 }
 
 /********************************************************************
@@ -134,7 +138,7 @@ static void LcdWriteData(U16 Data) {
 static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-	* ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) =  *pData++;//modify by fire
+  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) =  *pData++;//modify by fire
   }
 }
 
@@ -147,12 +151,12 @@ static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
 */
 static void LcdReadDataMultiple(U16 * pData, int NumItems) {
   //ili9806读取的第一个数据为无效数据，舍弃(原来没有使用config.numdummyreads参数的时候需要这个语句)
-	//*pData = ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );					
+  //*pData = ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );          
   while (NumItems--) {
     // ... TBD by user
-		*pData++ = ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );					//modify by fire
-		
-		
+    *pData++ = ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );          //modify by fire
+    
+    
   }
 }
 
@@ -189,8 +193,8 @@ void LCD_X_Config(void) {
   //
   Config.FirstCOM = 0;                                          //modify by fire
   Config.FirstSEG = 0;                                          //modify by fire  
-//	Config.Orientation = GUI_MIRROR_Y|GUI_MIRROR_X;								//modify by fire 竖屏
- Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;					    //modify by fire  横屏		
+//  Config.Orientation = GUI_MIRROR_Y|GUI_MIRROR_X;                //modify by fire 竖屏
+ Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;              //modify by fire  横屏    
   Config.NumDummyReads = 2;                                     //modify by fire 读取的第二个数据才是真实数据
 
   GUIDRV_FlexColor_Config(pDevice, &Config);
@@ -201,7 +205,7 @@ void LCD_X_Config(void) {
   PortAPI.pfWrite16_A1  = LcdWriteData;
   PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
   PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
-  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);		//modify by fire ?GUIDRV_FLEXCOLOR_F66708
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);    //modify by fire ?GUIDRV_FLEXCOLOR_F66708
 }
 
 /*********************************************************************
@@ -239,8 +243,8 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     // to be adapted by the customer...
     //
     // ...
-			LCD_Init ();        	//modify by fire
-		
+      LCD_Init ();          //modify by fire
+    
     return 0;
   }
   default:

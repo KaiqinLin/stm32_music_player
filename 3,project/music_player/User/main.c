@@ -4,14 +4,17 @@
 #include "./led/bsp_led.h"
 #include "./wm8978/bsp_wm8978.h"
 #include "./systick/bsp_systick.h"
+#include "./timer/bsp_timer.h"
 #include "./key/bsp_key.h" 
 #include "./test/mp3Player.h"
 #include "./lcd/bsp_lcd.h"
+#include "./malloc/malloc.h"
 #include "common.h"
 #include "ff.h"
 #include "./test/sdio_test.h"
 #include "./test/lcd_test.h"
 #include "GUI.h"
+#include "GUIDemo.h"
 
 /**************** Private marco    *******************/
 
@@ -37,10 +40,13 @@ void bsp_init(void)
   LED_GPIO_Config();
   Key_GPIO_Config();
   SysTick_Init();
+  TIMx_Configuration(&GUI_TOUCH_Exec);
   /* Initialize th xpt2046 and ili9341 as also as the periph */
   LCD_Init();
   /* Enable the CRC periph to support the GUI */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
+  mem_init(SRAMIN);
+  WM_SetCreateFlags(WM_CF_MEMDEV);
   GUI_Init();
   Debug_USART_Config();
 
@@ -70,10 +76,12 @@ int main(void)
 {
   bsp_init();
 
+  GUIDEMO_Main();
   while(1)
   {
-    lcd_test_case();
+//    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
+//    gui_touch_test_case();
   }
 
 }

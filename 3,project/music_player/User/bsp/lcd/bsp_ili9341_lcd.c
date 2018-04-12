@@ -209,7 +209,7 @@ static void ILI9341_FSMC_Config ( void )
   //地址建立时间（ADDSET）为1个HCLK 5/168M=30ns
   readWriteTiming.FSMC_AddressSetupTime      = 0x04;   //地址建立时间
   //数据保持时间（DATAST）+ 1个HCLK = 5/168M=30ns  
-  readWriteTiming.FSMC_DataSetupTime         = 0x04;   //数据建立时间
+  readWriteTiming.FSMC_DataSetupTime         = 0x08;   //数据建立时间
   //选择控制的模式
   //模式B,异步NOR FLASH模式，与ILI9341的8080时序匹配
   readWriteTiming.FSMC_AccessMode            = FSMC_AccessMode_B;  

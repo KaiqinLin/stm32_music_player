@@ -2,6 +2,8 @@
 #include "./lcd/bsp_xpt2046_lcd.h"
 #include "./lcd/bsp_ili9341_lcd.h"
 #include "./lcd/bsp_lcd.h"
+#include "GUI.h"
+#include "./systick/bsp_systick.h"
 
 
 
@@ -116,6 +118,41 @@ void lcd_test_case(void)
     }    
     
   }
+}
+void gui_touch_test_case(void)
+{
+   GUI_PID_STATE TOUCH_STAT;
+   int xPhys, yPhys;
+
+   GUI_SetFont(&GUI_Font20_ASCII);
+   GUI_CURSOR_Show();
+   GUI_CURSOR_Select(&GUI_CursorCrossL);
+
+
+   GUI_SetBkColor(GUI_WHITE);
+   GUI_Clear();
+
+   while (1) {
+     GUI_TOUCH_GetState(&TOUCH_STAT);
+     xPhys = GUI_TOUCH_GetxPhys();
+     yPhys = GUI_TOUCH_GetyPhys();
+
+     GUI_SetColor(GUI_BLUE);
+     GUI_DispStringAt("Anolog input:\n", 0, 40);
+     GUI_GotoY(GUI_GetDispPosY() + 2);
+     GUI_DispString("x:");
+     GUI_DispDec(xPhys, 4);
+     GUI_DispString(",y:");
+     GUI_DispDec(yPhys, 4);
+
+     GUI_SetColor(GUI_RED);
+     GUI_GotoY(GUI_GetDispPosY() + 4);
+     GUI_DispString("x:");
+     GUI_DispDec(TOUCH_STAT.x, 4);
+     GUI_DispString(",y:");
+     GUI_DispDec(TOUCH_STAT.y, 4);
+     Delay_10us(5000);
+   }
 }
 
 
