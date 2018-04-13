@@ -13,14 +13,21 @@
 64MB:FSMC_Bank1_NORSRAM3:0X6800 0000 ~ 0X6BFF FFFF
 64MB:FSMC_Bank1_NORSRAM4:0X6C00 0000 ~ 0X6FFF FFFF
 
-选择BANK1-BORSRAM3 连接 TFT，地址范围为0X6800 0000 ~ 0X6BFF FFFF
-FSMC_A0 接LCD的DC(寄存器/数据选择)脚
-寄存器基地址 = 0X6C00 0000
-RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^0*2 = 0X6800 0000 + 0X2 = 0X6800 0002
+选择BANK1-BORSRAM1 连接 TFT，地址范围为0X6000 0000 ~ 0X63FF FFFF
+FSMC_A16 接LCD的DC(寄存器/数据选择)脚
+寄存器基地址 = 0X6000 0000
+RAM基地址 = 0X6002 0000 = 0X6000 0000+2^16*2 = 0X6002 0000 + 0X2 = 0X6000 0000
 当选择不同的地址线时，地址要重新计算  
 ****************************************************************************************/
 
 /******************************* ILI9341 显示屏的 FSMC 参数定义 ***************************/
+typedef struct {
+  __IO uint16_t LCD_REG;
+  __IO uint16_t LCD_RAM;
+} LCD_TypeDef;
+#define      LCD_BASE                      ( ( uint32_t ) (0x60000000 | 0x0001FFFE))
+#define      LCD                           ((LCD_TypeDef *) LCD_BASE)
+
 //FSMC_Bank1_NORSRAM用于LCD命令操作的地址
 #define      FSMC_Addr_ILI9341_CMD         ( ( uint32_t ) 0x60000000 )
 
@@ -28,7 +35,7 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^0*2 = 0X6800 0000 + 0X2 = 0X6800 0002
 #define      FSMC_Addr_ILI9341_DATA        ( ( uint32_t ) 0x60020000 )
 
 //由片选引脚决定的NOR/SRAM块
-#define      FSMC_Bank1_NORSRAMx           FSMC_Bank1_NORSRAM3
+#define      FSMC_Bank1_NORSRAMx           FSMC_Bank1_NORSRAM1
 
 
 /******************************* ILI9341 显示屏8080通讯引脚定义 ***************************/

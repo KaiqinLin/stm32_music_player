@@ -113,7 +113,9 @@ Purpose     : Display controller configuration (single layer)
 */
 static void LcdWriteReg(U16 Data) {
   // ... TBD by user
-  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = Data;  //modify by fire
+//  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = Data;  //modify by fire
+  Data = Data;
+  LCD->LCD_REG = Data;
 }
 
 /********************************************************************
@@ -125,7 +127,9 @@ static void LcdWriteReg(U16 Data) {
 */
 static void LcdWriteData(U16 Data) {
   // ... TBD by user                
-  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = Data;//modify by fire
+//  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = Data;//modify by fire
+  Data = Data;
+  LCD->LCD_RAM = Data;
 }
 
 /********************************************************************

@@ -20,8 +20,9 @@ static uint16_t               ILI9341_Read_PixelData      ( void );
   */  
 __inline void ILI9341_Write_Cmd ( uint16_t usCmd )
 {
-  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = usCmd;
-  
+//  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = usCmd;
+  usCmd = usCmd;
+  LCD->LCD_REG = usCmd;
 }
 
 
@@ -32,8 +33,9 @@ __inline void ILI9341_Write_Cmd ( uint16_t usCmd )
   */  
 __inline void ILI9341_Write_Data ( uint16_t usData )
 {
-  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = usData;
-  
+//  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = usData;
+  usData = usData;
+  LCD->LCD_RAM = usData;
 }
 
 
@@ -44,8 +46,10 @@ __inline void ILI9341_Write_Data ( uint16_t usData )
   */  
 __inline uint16_t ILI9341_Read_Data ( void )
 {
-  return ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );
-  
+//  return ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );
+  __IO uint16_t usRam;
+  usRam = LCD->LCD_RAM;
+  return usRam;
 }
 
 
@@ -201,20 +205,18 @@ static void ILI9341_GPIO_Config ( void )
 static void ILI9341_FSMC_Config ( void )
   {
   FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
-  FSMC_NORSRAMTimingInitTypeDef  readWriteTiming;   
+  FSMC_NORSRAMTimingInitTypeDef  readWriteTiming;
+  FSMC_NORSRAMTimingInitTypeDef  writeTiming;
   
   /* 使能FSMC时钟*/
   RCC_AHB3PeriphClockCmd(RCC_AHB3Periph_FSMC,ENABLE);
 
-  //地址建立时间（ADDSET）为1个HCLK 5/168M=30ns
-  readWriteTiming.FSMC_AddressSetupTime      = 0x04;   //地址建立时间
-  //数据保持时间（DATAST）+ 1个HCLK = 5/168M=30ns  
-  readWriteTiming.FSMC_DataSetupTime         = 0x08;   //数据建立时间
-  //选择控制的模式
-  //模式B,异步NOR FLASH模式，与ILI9341的8080时序匹配
-  readWriteTiming.FSMC_AccessMode            = FSMC_AccessMode_B;  
-  
-  /*以下配置与模式B无关*/
+  //地址建立时间（ADDSET）为1个HCLK 16/168M=96ns
+  readWriteTiming.FSMC_AddressSetupTime      = 0x0F;   //地址建立时间
+  //数据保持时间（DATAST）+ 1个HCLK = 60/168M=360ns  
+  readWriteTiming.FSMC_DataSetupTime         = 0x3C;   //数据建立时间
+  //模式A,SRAM模式，与ILI9341的8080时序匹配
+  readWriteTiming.FSMC_AccessMode            = FSMC_AccessMode_A;  
   //地址保持时间（ADDHLD）模式A未用到
   readWriteTiming.FSMC_AddressHoldTime       = 0x00;   //地址保持时间
   //设置总线转换周期，仅用于复用模式的NOR操作
@@ -224,26 +226,42 @@ static void ILI9341_FSMC_Config ( void )
   //数据保持时间，仅用于同步型的NOR  
   readWriteTiming.FSMC_DataLatency           = 0x00;  
 
+
+  //地址建立时间（ADDSET）为1个HCLK 16/168M=96ns
+  writeTiming.FSMC_AddressSetupTime      = 0x06;   //地址建立时间
+  //数据保持时间（DATAST）+ 1个HCLK = 60/168M=360ns  
+  writeTiming.FSMC_DataSetupTime         = 0x05;   //数据建立时间
+  //模式A,SRAM模式，与ILI9341的8080时序匹配
+  writeTiming.FSMC_AccessMode            = FSMC_AccessMode_A;  
+  //地址保持时间（ADDHLD）模式A未用到
+  writeTiming.FSMC_AddressHoldTime       = 0x00;   //地址保持时间
+  //设置总线转换周期，仅用于复用模式的NOR操作
+  writeTiming.FSMC_BusTurnAroundDuration = 0x00;
+  //设置时钟分频，仅用于同步类型的存储器
+  writeTiming.FSMC_CLKDivision           = 0x00;
+  //数据保持时间，仅用于同步型的NOR  
+  writeTiming.FSMC_DataLatency           = 0x00;  
   
   FSMC_NORSRAMInitStructure.FSMC_Bank                  = FSMC_Bank1_NORSRAMx;
   FSMC_NORSRAMInitStructure.FSMC_DataAddressMux        = FSMC_DataAddressMux_Disable;
-  FSMC_NORSRAMInitStructure.FSMC_MemoryType            = FSMC_MemoryType_NOR;
+  FSMC_NORSRAMInitStructure.FSMC_MemoryType            = FSMC_MemoryType_SRAM;
   FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth       = FSMC_MemoryDataWidth_16b;
   FSMC_NORSRAMInitStructure.FSMC_BurstAccessMode       = FSMC_BurstAccessMode_Disable;
   FSMC_NORSRAMInitStructure.FSMC_WaitSignalPolarity    = FSMC_WaitSignalPolarity_Low;
+  FSMC_NORSRAMInitStructure.FSMC_AsynchronousWait      = FSMC_AsynchronousWait_Disable; 
   FSMC_NORSRAMInitStructure.FSMC_WrapMode              = FSMC_WrapMode_Disable;
   FSMC_NORSRAMInitStructure.FSMC_WaitSignalActive      = FSMC_WaitSignalActive_BeforeWaitState;
   FSMC_NORSRAMInitStructure.FSMC_WriteOperation        = FSMC_WriteOperation_Enable;
   FSMC_NORSRAMInitStructure.FSMC_WaitSignal            = FSMC_WaitSignal_Disable;
-  FSMC_NORSRAMInitStructure.FSMC_ExtendedMode          = FSMC_ExtendedMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_ExtendedMode          = FSMC_ExtendedMode_Enable;
   FSMC_NORSRAMInitStructure.FSMC_WriteBurst            = FSMC_WriteBurst_Disable;
   FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &readWriteTiming;
-  FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct     = &readWriteTiming;  
+  FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct     = &writeTiming;  
   
   FSMC_NORSRAMInit ( & FSMC_NORSRAMInitStructure ); 
   
   
-  /* 使能 FSMC_Bank1_NORSRAM3 */
+  /* 使能 FSMC_Bank1_NORSRAM1 */
   FSMC_NORSRAMCmd ( FSMC_Bank1_NORSRAMx, ENABLE );  
     
     

@@ -42,7 +42,7 @@ void bsp_init(void)
   SysTick_Init();
   TIMx_Configuration(&GUI_TOUCH_Exec);
   /* Initialize th xpt2046 and ili9341 as also as the periph */
-  LCD_Init();
+//  LCD_Init();
   /* Enable the CRC periph to support the GUI */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
   mem_init(SRAMIN);
@@ -76,12 +76,12 @@ int main(void)
 {
   bsp_init();
 
-  GUIDEMO_Main();
+//  GUIDEMO_Main();
   while(1)
   {
 //    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
-//    gui_touch_test_case();
+    gui_touch_test_case();
   }
 
 }
