@@ -773,6 +773,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>SCHEDULER</GroupName>
+          <Files>
+            <File>
+              <FileName>inner_loop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\scheduler\inner_loop.c</FilePath>
+            </File>
+            <File>
+              <FileName>scheduler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\scheduler\scheduler.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>APP</GroupName>
           <Files>
             <File>

@@ -8,6 +8,7 @@
 #include "./key/bsp_key.h" 
 #include "./test/mp3Player.h"
 #include "./lcd/bsp_lcd.h"
+#include "./scheduler/scheduler.h"
 #include "./malloc/malloc.h"
 #include "common.h"
 #include "ff.h"
@@ -22,8 +23,17 @@
 /**************** Global varialbles ******************/
 FATFS fs;
 
-
-
+void test_task(task_t *s, void *ctx)
+{
+  static uint32_t i = 0;
+  GUI_GotoXY(10, 60);
+  GUI_DispDec(i++, 4);
+}
+/**************** Task array        ******************/
+task_t task_array[] = 
+{
+   {test_task,   (uint8_t *)"test_task",   10, 5, NULL}
+};
 
 
 /**
@@ -64,6 +74,8 @@ void bsp_init(void)
     while(1);
   }
 
+  /* scheduler timer config */
+  TIM6_Configuration();
 }
 
 
@@ -76,12 +88,15 @@ int main(void)
 {
   bsp_init();
 
+  default_init(&g_sched, task_array, ARRAY_LEN(task_array));
+
 //  GUIDEMO_Main();
   while(1)
   {
 //    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
-    gui_touch_test_case();
+//    gui_touch_test_case();
+    main_loop(&g_sched);
   }
 
 }
