@@ -21,8 +21,6 @@ typedef struct _player_ctx_t {
   uint32_t       ucfreq;
   buf_t         *input_buf;            /*<! pointer to the buffer of read from file>*/
   srt_buf_array *output_buf;           /*<! pointer to the buffer decoded output >*/
-  __IO uint8_t   is_read_flag;         /*<! DMA transfer complete flag>*/
-  
 } player_ctx_t;
 
 extern player_ctx_t    play_ctx;

@@ -17,6 +17,7 @@
 #include "GUI.h"
 #include "GUIDemo.h"
 #include "./player/player.h"
+#include "./key/key_input.h"
 
 /**************** Private marco    *******************/
 
@@ -33,7 +34,9 @@ void test_task(task_t *s, void *ctx)
 /**************** Task array        ******************/
 task_t task_array[] = 
 {
-   {test_task,   (uint8_t *)"test_task",   10, 5, NULL}
+   {test_task,         (uint8_t *)"test_task",   10, 5, NULL},
+
+   {key_input_task,    (uint8_t *)"key_task",    20, 1, NULL}
 };
 
 

@@ -19,12 +19,12 @@ player_ctx_t    play_ctx =
 {
   .ucvolume = 20,
   .ucstatus = STA_IDLE,
-  .ucfreq   = I2S_AudioFreq_Default,
-  .is_read_flag = 0
+  .ucfreq   = I2S_AudioFreq_Default
 };
 static HMP3Decoder     Mp3Decoder;      /* mp3解码器指针  */
 static MP3FrameInfo    Mp3FrameInfo;    /* mP3帧信息  */
-static uint8_t bufflag = 0;             /* 数据缓存区选择标志 */
+static __IO uint8_t bufflag = 0;             /* 数据缓存区选择标志 */
+static __IO uint8_t is_read_flag = 0;        /*<! DMA transfer complete flag>*/
 
 short outbuf[2][MP3BUFFER_SIZE];  /* 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
 
@@ -63,7 +63,8 @@ void player_init(task_t *s, void *ctx)
   I2S_DMA_TX_Callback=MP3Player_I2S_DMA_TX_Callback;
   I2Sx_TX_DMA_Init((uint16_t *)(pctx->output_buf)[0], (uint16_t *)(pctx->output_buf)[1], MP3BUFFER_SIZE);
   
-  bufflag=0;
+  bufflag = 0;
+  is_read_flag = 0;
 }
 
 
@@ -73,8 +74,8 @@ void player_task(task_t *s, void *ctx)
   _RETURN_IF_FAIL(pctx);
 
   uint8_t *read_ptr = pctx->input_buf->_base;
-  uint32_t frames=0;
-  int err=0, i=0, outputSamps=0;  
+  uint32_t frames = 0;
+  int  err = 0, i = 0, outputSamps = 0;  
   int  read_offset = 0;        /* 读偏移指针 */
   int  bytes_left = 0;          /* 剩余字节数 */  
 
@@ -167,7 +168,7 @@ void player_task(task_t *s, void *ctx)
           }  
           break;
       }
-      pctx->is_read_flag = 1;
+      is_read_flag = 1;
     }
     else    //解码无错误，准备把数据输出到PCM
     {
@@ -218,10 +219,10 @@ void player_task(task_t *s, void *ctx)
       break;
     }  
     
-    while(pctx->is_read_flag == 0)
+    while (is_read_flag == 0)
     {
     }
-    pctx->is_read_flag = 0;
+    is_read_flag = 0;
   }
   I2S_Stop();
   pctx->ucstatus=STA_IDLE;
@@ -241,7 +242,7 @@ void MP3Player_I2S_DMA_TX_Callback(void)
   {
     bufflag=1;                       //可以将数据读取到缓冲区1
   }
-  play_ctx.is_read_flag = 1;                          // DMA传输完成标志
+  is_read_flag = 1;                          // DMA传输完成标志
 }
 
 
