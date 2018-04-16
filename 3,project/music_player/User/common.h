@@ -1,7 +1,7 @@
 #ifndef __COMMON_H
 #define __COMMON_H
-
 #include <stdlib.h>
+#include <stdint.h>
 
 #define DEBUG
 #ifdef DEBUG
@@ -13,6 +13,15 @@
 /* To caculate the task array lenth */
 #define ARRAY_LEN(ARRAY) (sizeof(ARRAY)/sizeof(ARRAY[0]))
 
+/* common status return code */
+#define    GEN_NO_ERR                     0
+#define    GEN_INIT_ERR                  -1
+#define    GEN_RUN_ERR                   -2
+#define    GEN_NULL_P_ERR                -3
+#define    GEN_IO_ERR                    -4
+#define    GEN_MEM_ERR                   -5
+#define    GEN_DEINITIALIZED             -6
+#define    GEN_INVALID_P                 -9
 
 /* NULL Pointer Dereference Guard */
 #define _RETURN_IF_FAIL(p)         \
@@ -84,4 +93,11 @@
   }      \
   while(0)  
 
+
+
+/* function return status code */
+typedef int16_t status_t;
+
+
 #endif /*__COMMON_H*/
+
