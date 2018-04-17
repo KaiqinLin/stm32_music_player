@@ -70,8 +70,8 @@ Purpose     : Display controller configuration (single layer)
 //
 // Physical display size
 //
-#define XSIZE_PHYS  240 // To be adapted to x-screen size
-#define YSIZE_PHYS  320 // To be adapted to y-screen size
+#define XSIZE_PHYS  320 // To be adapted to x-screen size
+#define YSIZE_PHYS  240 // To be adapted to y-screen size
 
 /*********************************************************************
 *
@@ -186,30 +186,31 @@ void LCD_X_Config(void) {
   //
   // Set display driver and color conversion
   //
-  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_M565, 0, 0);
+  pDevice = GUI_DEVICE_CreateAndLink(&GUIDRV_Template_API, GUICC_M565, 0, 0);
   //
   // Display driver configuration, required for Lin-driver
   //
   LCD_SetSizeEx (0, XSIZE_PHYS , YSIZE_PHYS);
   LCD_SetVSizeEx(0, VXSIZE_PHYS, VYSIZE_PHYS);
+
   //
   // Orientation
   //
-  Config.FirstCOM = 0;                                          //modify by fire
-  Config.FirstSEG = 0;                                          //modify by fire  
+//  Config.FirstCOM = 0;                                          //modify by fire
+//  Config.FirstSEG = 0;                                          //modify by fire  
 //  Config.Orientation = GUI_MIRROR_Y|GUI_MIRROR_X;                //modify by fire 竖屏
- Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;              //modify by fire  横屏    
-  Config.NumDummyReads = 2;                                     //modify by fire 读取的第二个数据才是真实数据
+// Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;              //modify by fire  横屏    
+//  Config.NumDummyReads = 2;                                     //modify by fire 读取的第二个数据才是真实数据
 
-  GUIDRV_FlexColor_Config(pDevice, &Config);
+//  GUIDRV_FlexColor_Config(pDevice, &Config);
   //
   // Set controller and operation mode
   //
-  PortAPI.pfWrite16_A0  = LcdWriteReg;
-  PortAPI.pfWrite16_A1  = LcdWriteData;
-  PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
-  PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
-  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);    //modify by fire ?GUIDRV_FLEXCOLOR_F66708
+//  PortAPI.pfWrite16_A0  = LcdWriteReg;
+//  PortAPI.pfWrite16_A1  = LcdWriteData;
+//  PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
+//  PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
+//  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);    //modify by fire ?GUIDRV_FLEXCOLOR_F66708
 }
 
 /*********************************************************************

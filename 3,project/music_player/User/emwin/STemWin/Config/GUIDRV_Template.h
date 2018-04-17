@@ -27,8 +27,8 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
-File        : GUIConf.c
-Purpose     : Display controller initialization
+File        : GUIDRV_Template.h
+Purpose     : Interface definition for GUIDRV_Template driver
 ---------------------------END-OF-HEADER------------------------------
 */
 
@@ -51,49 +51,23 @@ Purpose     : Display controller initialization
   ******************************************************************************
   */
 
-#include "GUI.h"
-#include "./malloc/malloc.h"
-/*********************************************************************
-*
-*       Defines
-*
-**********************************************************************
-*/
-//
-// Define the available number of bytes available for the GUI
-//
-#define GUI_NUMBYTES  1024*60								//modify by fire 原 0x200000
+#ifndef GUIDRV_TEMPLATE_H
+#define GUIDRV_TEMPLATE_H
 
-#define GUI_BLOCKSIZE 0x80
 /*********************************************************************
 *
-*       Public code
-*
-**********************************************************************
+*       Display drivers
 */
-/*********************************************************************
-*
-*       GUI_X_Config
-*
-* Purpose:
-*   Called during the initialization process in order to set up the
-*   available memory for the GUI.
-*/
-void GUI_X_Config(void) {
-  //
-  // 32 bit aligned memory area
-  //
-  static U32 aMemory[GUI_NUMBYTES >> 2];
-  //
-  // Assign memory to emWin
-  //
-  GUI_ALLOC_AssignMemory(aMemory, GUI_NUMBYTES);
-  
-  GUI_ALLOC_SetAvBlockSize(GUI_BLOCKSIZE);
-  //
-  // Set default font
-  //
-  GUI_SetDefaultFont(GUI_FONT_8X16);
-}
+//
+// Addresses
+//
+extern const GUI_DEVICE_API GUIDRV_Template_API;
+
+//
+// Macro to be used in configuration files
+//
+#define GUIDRV_TEMPLATE            &GUIDRV_Template_API
+
+#endif
 
 /*************************** End of file ****************************/

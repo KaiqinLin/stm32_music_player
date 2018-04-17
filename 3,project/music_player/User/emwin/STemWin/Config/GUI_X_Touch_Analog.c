@@ -11,10 +11,10 @@ void GUI_TOUCH_X_ActivateY(void) {
 
 int GUI_TOUCH_X_MeasureX(void) {
 
-    return XPT2046_ReadADC_Smooth_XOY(macXPT2046_CHANNEL_X);
+    return XPT2046_ReadADC_Smooth_XOY(macXPT2046_CHANNEL_Y);
 }
 int GUI_TOUCH_X_MeasureY(void) {
-    return XPT2046_ReadADC_Smooth_XOY(macXPT2046_CHANNEL_Y);
+    return XPT2046_ReadADC_Smooth_XOY(macXPT2046_CHANNEL_X);
 }
 
 
