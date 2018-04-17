@@ -34,9 +34,10 @@ void test_task(task_t *s, void *ctx)
 /**************** Task array        ******************/
 task_t task_array[] = 
 {
-   {test_task,         (uint8_t *)"test_task",   10, 5, NULL},
+   {player_task,       (uint8_t *)"player_task", 100, 3, 0, &play_ctx},
+   {test_task,         (uint8_t *)"test_task",    10, 2, 0, NULL},
 
-   {key_input_task,    (uint8_t *)"key_task",    20, 1, NULL}
+   {key_input_task,    (uint8_t *)"key_task",     20, 1, 0, NULL}
 };
 
 
@@ -60,7 +61,7 @@ void bsp_init(void)
   /* Enable the CRC periph to support the GUI */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
 
-//  WM_SetCreateFlags(WM_CF_MEMDEV);
+  WM_SetCreateFlags(WM_CF_MEMDEV);
   GUI_Init();
   Debug_USART_Config();
 
@@ -102,8 +103,8 @@ int main(void)
 //    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
 //    gui_touch_test_case();
-//    main_loop(&g_sched);
-    player_task(NULL, &play_ctx);
+    main_loop(&g_sched);
+//    player_task(NULL, &play_ctx);
   }
 
 }

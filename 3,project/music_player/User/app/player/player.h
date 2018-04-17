@@ -19,6 +19,7 @@ typedef struct _player_ctx_t {
   uint8_t        ucvolume;             /*<! setting volume >*/
   uint8_t        ucstatus;             /*<! playing status >*/
   uint32_t       ucfreq;
+  __IO uint8_t   file_sw;
   buf_t         *input_buf;            /*<! pointer to the buffer of read from file>*/
   srt_buf_array *output_buf;           /*<! pointer to the buffer decoded output >*/
 } player_ctx_t;
