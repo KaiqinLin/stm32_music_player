@@ -154,7 +154,7 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f4xx.s).                                               */
 /******************************************************************************/
-
+/*
 void macXPT2046_EXTI_INT_FUNCTION ( void )
 { 
   if ( EXTI_GetITStatus ( macXPT2046_EXTI_LINE ) != RESET )
@@ -166,6 +166,7 @@ void macXPT2046_EXTI_INT_FUNCTION ( void )
   }
 
 }
+*/
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

@@ -13,7 +13,7 @@
 #include "common.h"
 #include "ff.h"
 //#include "./test/sdio_test.h"
-//#include "./test/lcd_test.h"
+#include "./test/lcd_test.h"
 #include "GUI.h"
 #include "GUIDemo.h"
 #include "./player/player.h"
@@ -102,8 +102,9 @@ int main(void)
   {
 //    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
-//    gui_touch_test_case();
-    main_loop(&g_sched);
+    gui_touch_test_case();
+//    main_loop(&g_sched);
+//    MainTask();
 //    player_task(NULL, &play_ctx);
   }
 
