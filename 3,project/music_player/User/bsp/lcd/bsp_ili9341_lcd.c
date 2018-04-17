@@ -7,7 +7,6 @@ static void                   ILI9341_Delay               ( __IO uint32_t nCount
 static void                   ILI9341_GPIO_Config         ( void );
 static void                   ILI9341_FSMC_Config         ( void );
 static void                   ILI9341_REG_Config          ( void );
-static void                   ILI9341_SetCursor           ( uint16_t usX, uint16_t usY );
 static __inline void          ILI9341_FillColor           ( uint32_t ulAmout_Point, uint16_t usColor );
 static uint16_t               ILI9341_Read_PixelData      ( void );
 
@@ -645,9 +644,10 @@ void ILI9341_OpenWindow ( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t
  * @param  usY ：在特定扫描方向下光标的Y坐标
  * @retval 无
  */
-static void ILI9341_SetCursor ( uint16_t usX, uint16_t usY )  
+void ILI9341_SetCursor ( uint16_t usX, uint16_t usY )  
 {
   ILI9341_OpenWindow ( usX, usY, 1, 1 );
+
 }
 
 
@@ -701,9 +701,14 @@ void ILI9341_SetPointPixel ( uint16_t usX, uint16_t usY, uint16_t usColor )
 {  
   if ( ( usX < macILI9341_DispWindow_COLUMN ) && ( usY < macILI9341_DispWindow_PAGE ) )
   {
-    ILI9341_SetCursor ( usX, usY );
-    
-    ILI9341_FillColor ( 1, usColor );
+    ILI9341_Write_Cmd(macCMD_SetCoordinateX);
+    ILI9341_Write_Data(usX >> 8);
+    ILI9341_Write_Data(usX & 0xFF);
+    ILI9341_Write_Cmd(macCMD_SetCoordinateY);
+    ILI9341_Write_Data(usY >> 8);
+    ILI9341_Write_Data(usY & 0xFF);
+    ILI9341_Write_Cmd ( macCMD_SetPixel );
+    ILI9341_Write_Data(usColor);
   }
   
 }

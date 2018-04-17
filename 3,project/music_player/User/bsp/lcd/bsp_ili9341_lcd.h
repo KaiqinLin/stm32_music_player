@@ -238,7 +238,7 @@ void                     ILI9341_DispString_EN           ( uint16_t usX, uint16_
 void                     ILI9341_DispChar_CH             ( uint16_t usX, uint16_t usY, uint16_t usChar, uint16_t usColor_Background, uint16_t usColor_Foreground );
 void                     ILI9341_DispString_CH           ( uint16_t usX, uint16_t usY, const uint8_t * pStr, uint16_t usColor_Background, uint16_t usColor_Foreground );
 void                     ILI9341_DispString_EN_CH        ( uint16_t usX, uint16_t usY, const uint8_t * pStr, uint16_t usColor_Background, uint16_t usColor_Foreground );
-
+extern void              ILI9341_SetCursor               ( uint16_t usX, uint16_t usY );
 
 
 #endif /* __BSP_ILI9341_ILI9341_H */

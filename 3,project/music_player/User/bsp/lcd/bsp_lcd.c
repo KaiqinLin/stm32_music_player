@@ -13,7 +13,7 @@
 void LCD_Init ( void )
 {
   ILI9341_Init ();
-  Delay_10us(1000);
+  Delay_ms(100);
   
 #if macLCD_XPT2046_ENABLE
   

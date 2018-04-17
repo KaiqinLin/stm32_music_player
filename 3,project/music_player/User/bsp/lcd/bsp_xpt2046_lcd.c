@@ -8,7 +8,7 @@
 /******************************* 声明 XPT2046 相关的静态函数 ***************************/
 static void                   XPT2046_EXTI_Config                   ( void );
 static void                   XPT2046_EXTI_NVIC_Config              ( void );
-static void                   XPT2046_GPIO_SPI_Config               ( void );
+static void                   XPT2046_GPIO_Config                   ( void );
 
 static void                   XPT2046_DelayUS                       ( __IO uint32_t ulCount );
 static void                   XPT2046_WriteCMD                      ( uint8_t ucCmd );
@@ -36,67 +36,67 @@ volatile uint8_t ucXPT2046_TouchFlag = 0;
   */  
 void XPT2046_Init ( void )
 {
-  XPT2046_GPIO_SPI_Config ();
+  XPT2046_GPIO_Config ();
   
-  XPT2046_EXTI_Config ();
+//  XPT2046_EXTI_Config ();
     
 }
 
 
-/**
-  * @brief  配置 XPT2046 外部中断优先级
-  * @param  无
-  * @retval 无
-  */  
-static void XPT2046_EXTI_NVIC_Config ( void )
-{
-  NVIC_InitTypeDef NVIC_InitStructure;
-  
-  
-  /* 配置中断源 */
-  NVIC_InitStructure.NVIC_IRQChannel = macXPT2046_EXTI_IRQ;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-  
-}
+///**
+//  * @brief  配置 XPT2046 外部中断优先级
+//  * @param  无
+//  * @retval 无
+//  */  
+//static void XPT2046_EXTI_NVIC_Config ( void )
+//{
+//  NVIC_InitTypeDef NVIC_InitStructure;
+//  
+//  
+//  /* 配置中断源 */
+//  NVIC_InitStructure.NVIC_IRQChannel = macXPT2046_EXTI_IRQ;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//  
+//}
 
 
-/**
-  * @brief  配置 XPT2046 外部中断
-  * @param  无
-  * @retval 无
-  */  
-static void XPT2046_EXTI_Config ( void )
-{
-  GPIO_InitTypeDef GPIO_InitStructure; 
-  EXTI_InitTypeDef EXTI_InitStructure;
+///**
+//  * @brief  配置 XPT2046 外部中断
+//  * @param  无
+//  * @retval 无
+//  */  
+//static void XPT2046_EXTI_Config ( void )
+//{
+//  GPIO_InitTypeDef GPIO_InitStructure; 
+//  EXTI_InitTypeDef EXTI_InitStructure;
 
-  
-  /* config the extiline clock and AFIO clock */
-  RCC_AHB1PeriphClockCmd ( macXPT2046_EXTI_GPIO_CLK, ENABLE );
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-                        
-  /* config the NVIC */
-  XPT2046_EXTI_NVIC_Config ();
+//  
+//  /* config the extiline clock and AFIO clock */
+//  RCC_AHB1PeriphClockCmd ( macXPT2046_EXTI_GPIO_CLK, ENABLE );
+//  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+//                        
+//  /* config the NVIC */
+//  XPT2046_EXTI_NVIC_Config ();
 
-  /* EXTI line gpio config*/  
-  GPIO_InitStructure.GPIO_Pin = macXPT2046_EXTI_GPIO_PIN;       
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;   // 上拉输入
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(macXPT2046_EXTI_GPIO_PORT, &GPIO_InitStructure);
+//  /* EXTI line gpio config*/  
+//  GPIO_InitStructure.GPIO_Pin = macXPT2046_EXTI_GPIO_PIN;       
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;   // 上拉输入
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//  GPIO_Init(macXPT2046_EXTI_GPIO_PORT, &GPIO_InitStructure);
 
-  /* EXTI line mode config */
-  SYSCFG_EXTILineConfig(macXPT2046_EXTI_SOURCE_PORT, macXPT2046_EXTI_SOURCE_PIN); 
-  EXTI_InitStructure.EXTI_Line = macXPT2046_EXTI_LINE;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //下降沿中断
-  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-  
-  EXTI_Init(&EXTI_InitStructure); 
-  
-}
+//  /* EXTI line mode config */
+//  SYSCFG_EXTILineConfig(macXPT2046_EXTI_SOURCE_PORT, macXPT2046_EXTI_SOURCE_PIN); 
+//  EXTI_InitStructure.EXTI_Line = macXPT2046_EXTI_LINE;
+//  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+//  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //下降沿中断
+//  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+//  
+//  EXTI_Init(&EXTI_InitStructure); 
+//  
+//}
 
 
 /**
@@ -104,7 +104,7 @@ static void XPT2046_EXTI_Config ( void )
   * @param  无
   * @retval 无
   */  
-static void XPT2046_GPIO_SPI_Config ( void ) 
+static void XPT2046_GPIO_Config ( void ) 
 { 
   GPIO_InitTypeDef  GPIO_InitStructure;
   
@@ -140,6 +140,10 @@ static void XPT2046_GPIO_SPI_Config ( void )
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(macXPT2046_SPI_CS_PORT, &GPIO_InitStructure); 
    
+  GPIO_InitStructure.GPIO_Pin = macXPT2046_EXTI_GPIO_PIN;       
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;   // 上拉输入
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(macXPT2046_EXTI_GPIO_PORT, &GPIO_InitStructure);
   /* 拉低片选，选择XPT2046 */
   macXPT2046_CS_DISABLE();
 
