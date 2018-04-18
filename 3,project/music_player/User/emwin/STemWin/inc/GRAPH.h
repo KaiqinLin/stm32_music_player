@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -122,8 +121,8 @@ GRAPH_Handle GRAPH_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN 
 GRAPH_Handle GRAPH_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 GRAPH_Handle GRAPH_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
-GRAPH_DATA_Handle  GRAPH_DATA_XY_Create(GUI_COLOR Color, unsigned MaxNumItems, GUI_POINT * pData, unsigned NumItems);
-GRAPH_DATA_Handle  GRAPH_DATA_YT_Create(GUI_COLOR Color, unsigned MaxNumItems, I16 * pData, unsigned NumItems);
+GRAPH_DATA_Handle  GRAPH_DATA_XY_Create(GUI_COLOR Color, unsigned MaxNumItems, const GUI_POINT * pData, unsigned NumItems);
+GRAPH_DATA_Handle  GRAPH_DATA_YT_Create(GUI_COLOR Color, unsigned MaxNumItems, const I16 * pData, unsigned NumItems);
 GRAPH_SCALE_Handle GRAPH_SCALE_Create  (int Pos, int TextAlign, unsigned Flags, unsigned TickDist);
 
 /*********************************************************************
@@ -167,6 +166,8 @@ void      GRAPH_SetUserDraw            (GRAPH_Handle hObj, void (* pOwnerDraw)(W
 void      GRAPH_DATA_YT_AddValue       (GRAPH_DATA_Handle hDataObj, I16 Value);
 void      GRAPH_DATA_YT_Clear          (GRAPH_DATA_Handle hDataObj);
 void      GRAPH_DATA_YT_Delete         (GRAPH_DATA_Handle hDataObj);
+int       GRAPH_DATA_YT_GetValue       (GRAPH_DATA_Handle hDataObj, I16 * pValue, U32 Index);
+
 void      GRAPH_DATA_YT_SetAlign       (GRAPH_DATA_Handle hDataObj, int Align);
 void      GRAPH_DATA_YT_SetOffY        (GRAPH_DATA_Handle hDataObj, int Off);
 void      GRAPH_DATA_YT_MirrorX        (GRAPH_DATA_Handle hDataObj, int OnOff);
@@ -175,6 +176,7 @@ void      GRAPH_DATA_XY_AddPoint       (GRAPH_DATA_Handle hDataObj, GUI_POINT * 
 void      GRAPH_DATA_XY_Clear          (GRAPH_DATA_Handle hDataObj);
 void      GRAPH_DATA_XY_Delete         (GRAPH_DATA_Handle hDataObj);
 unsigned  GRAPH_DATA_XY_GetLineVis     (GRAPH_DATA_Handle hDataObj);
+int       GRAPH_DATA_XY_GetPoint       (GRAPH_DATA_Handle hDataObj, GUI_POINT * pPoint, U32 Index);
 unsigned  GRAPH_DATA_XY_GetPointVis    (GRAPH_DATA_Handle hDataObj);
 void      GRAPH_DATA_XY_SetLineStyle   (GRAPH_DATA_Handle hDataObj, U8 LineStyle);
 unsigned  GRAPH_DATA_XY_SetLineVis     (GRAPH_DATA_Handle hDataObj, unsigned OnOff);

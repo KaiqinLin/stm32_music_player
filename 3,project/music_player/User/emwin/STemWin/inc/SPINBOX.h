@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -105,7 +104,7 @@ Purpose     : SPINBOX header file
 #define SPINBOX_SKIN_FLEX            SPINBOX_DrawSkinFlex
 
 #define SPINBOX_SKINFLEX_PI_PRESSED  0
-#define SPINBOX_SKINFLEX_PI_FOCUSSED 1
+#define SPINBOX_SKINFLEX_PI_FOCUSED  1
 #define SPINBOX_SKINFLEX_PI_ENABLED  2
 #define SPINBOX_SKINFLEX_PI_DISABLED 3
 #define SPINBOX_SKIN_FLEX_RADIUS     2

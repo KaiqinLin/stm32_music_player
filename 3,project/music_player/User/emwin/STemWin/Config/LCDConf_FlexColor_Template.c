@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -63,10 +62,6 @@ Purpose     : Display controller configuration (single layer)
 **********************************************************************
 */
 
-#define TOUCH_AD_TOP       3792
-#define TOUCH_AD_BOTTOM    0165
-#define TOUCH_AD_LEFT      3719
-#define TOUCH_AD_RIGHT     222
 //
 // Physical display size
 //
@@ -113,9 +108,6 @@ Purpose     : Display controller configuration (single layer)
 */
 static void LcdWriteReg(U16 Data) {
   // ... TBD by user
-//  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_CMD ) = Data;  //modify by fire
-  Data = Data;
-  LCD->LCD_REG = Data;
 }
 
 /********************************************************************
@@ -126,10 +118,7 @@ static void LcdWriteReg(U16 Data) {
 *   Writes a value to a display register
 */
 static void LcdWriteData(U16 Data) {
-  // ... TBD by user                
-//  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) = Data;//modify by fire
-  Data = Data;
-  LCD->LCD_RAM = Data;
+  // ... TBD by user
 }
 
 /********************************************************************
@@ -142,7 +131,6 @@ static void LcdWriteData(U16 Data) {
 static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-  * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) =  *pData++;//modify by fire
   }
 }
 
@@ -154,13 +142,8 @@ static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
 *   Reads multiple values from a display register.
 */
 static void LcdReadDataMultiple(U16 * pData, int NumItems) {
-  //ili9806读取的第一个数据为无效数据，舍弃(原来没有使用config.numdummyreads参数的时候需要这个语句)
-  //*pData = ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );          
   while (NumItems--) {
     // ... TBD by user
-    *pData++ = ( * ( __IO uint16_t * ) ( FSMC_Addr_ILI9341_DATA ) );          //modify by fire
-    
-    
   }
 }
 
@@ -181,36 +164,34 @@ static void LcdReadDataMultiple(U16 * pData, int NumItems) {
 */
 void LCD_X_Config(void) {
   GUI_DEVICE * pDevice;
+/*
   CONFIG_FLEXCOLOR Config = {0};
   GUI_PORT_API PortAPI = {0};
+*/
   //
   // Set display driver and color conversion
   //
-  pDevice = GUI_DEVICE_CreateAndLink(&GUIDRV_Template_API, GUICC_M565, 0, 0);
+  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_565, 0, 0);
   //
   // Display driver configuration, required for Lin-driver
   //
   LCD_SetSizeEx (0, XSIZE_PHYS , YSIZE_PHYS);
   LCD_SetVSizeEx(0, VXSIZE_PHYS, VYSIZE_PHYS);
-
+/*
   //
   // Orientation
   //
-//  Config.FirstCOM = 0;                                          //modify by fire
-//  Config.FirstSEG = 0;                                          //modify by fire  
-//  Config.Orientation = GUI_MIRROR_Y|GUI_MIRROR_X;                //modify by fire 竖屏
-// Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;              //modify by fire  横屏    
-//  Config.NumDummyReads = 2;                                     //modify by fire 读取的第二个数据才是真实数据
-
-//  GUIDRV_FlexColor_Config(pDevice, &Config);
+  Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;
+  GUIDRV_FlexColor_Config(pDevice, &Config);
   //
   // Set controller and operation mode
   //
-//  PortAPI.pfWrite16_A0  = LcdWriteReg;
-//  PortAPI.pfWrite16_A1  = LcdWriteData;
-//  PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
-//  PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
-//  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);    //modify by fire ?GUIDRV_FLEXCOLOR_F66708
+  PortAPI.pfWrite16_A0  = LcdWriteReg;
+  PortAPI.pfWrite16_A1  = LcdWriteData;
+  PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
+  PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66708, GUIDRV_FLEXCOLOR_M16C0B16);
+*/
 }
 
 /*********************************************************************
@@ -241,6 +222,7 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
   
   switch (Cmd) {
   case LCD_X_INITCONTROLLER: {
+    LCD_Init();
     //
     // Called during the initialization process in order to set up the
     // display controller and put it into operation. If the display
@@ -248,8 +230,6 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     // to be adapted by the customer...
     //
     // ...
-      LCD_Init ();          //modify by fire
-    
     return 0;
   }
   default:

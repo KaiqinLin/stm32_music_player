@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -54,29 +53,43 @@ Purpose : Global types etc.
 #ifndef GLOBAL_H            // Guard against multiple inclusion
 #define GLOBAL_H
 
-/*********************************************************************
-*
-*       Macros
-*
-**********************************************************************
-*/
-#ifndef   U8
-  #define U8  unsigned char
+#define U8    unsigned char
+#define I8    signed char
+#define U16   unsigned short
+#define I16   signed short
+#ifdef __x86_64__
+#define U32   unsigned
+#define I32   int
+#else
+#define U32   unsigned long
+#define I32   signed long
 #endif
-#ifndef   U16
-  #define U16 unsigned short
-#endif
-#ifndef   U32
-  #define U32 unsigned long
-#endif
-#ifndef   I8
-  #define I8  signed char
-#endif
-#ifndef   I16
-  #define I16 signed short
-#endif
-#ifndef   I32
-  #define I32 signed long
+
+#ifdef _WIN32
+  //
+  // Microsoft VC6 compiler related
+  //
+  #ifdef __MINGW32__
+    #define U64   unsigned long long
+    #define I64   long long
+  #else
+    #define U64   unsigned __int64
+    #define U128  unsigned __int128
+    #define I64   __int64
+    #define I128  __int128
+    #if _MSC_VER <= 1200
+      #define U64_C(x) x##UI64
+    #else
+      #define U64_C(x) x##ULL
+    #endif
+  #endif
+#else
+  //
+  // C99 compliant compiler
+  //
+  #define U64   unsigned long long
+  #define I64   signed long long
+  #define U64_C(x) x##ULL
 #endif
 
 #endif                      // Avoid multiple inclusion

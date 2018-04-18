@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -79,6 +78,7 @@ static void _FillRectOpt24(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1)
   OffLine   = (pContext->vxSizePhys + pContext->vxSizePhys +pContext->vxSizePhys) >> 2;
   RemItems  = 0;
   Off       = 0;
+#if (LCD_ENDIAN_BIG == 0)
   if (GUI_pContext->DrawMode & LCD_DRAWMODE_XOR) {
     //
     // First triple DWORD
@@ -183,7 +183,7 @@ static void _FillRectOpt24(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1)
       }
     }
   } else {
-    ColorIndex = LCD__GetColorIndex();
+    ColorIndex = LCD__GetColorIndex() & 0xFFFFFF;
     //
     // First triple DWORD
     //
@@ -294,6 +294,225 @@ static void _FillRectOpt24(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1)
       }
     }
   }
+#else
+  if (GUI_pContext->DrawMode & LCD_DRAWMODE_XOR) {
+    //
+    // First triple DWORD
+    //
+    if (Odd) {
+      for (RemLines = NumLines; RemLines; RemLines--) {
+        RemItems = RemPixels;
+        Off      = Off0 + OffLine * (RemLines - 1);
+        Data     = READ_MEM32(pContext->VRAMAddr, Off);
+        switch (Odd) {
+        case 1:
+          Data ^= 0x000000FF;
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          Off++;
+          Data  = READ_MEM32(pContext->VRAMAddr, Off);
+          Data ^= 0xFFFF0000;
+          RemItems--;
+          if (!RemItems) {
+            WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+            break;
+          }
+          //
+          // no break at this position required...
+          //
+        case 2:
+          Data ^= 0x0000FFFF;
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          Off++;
+          Data  = READ_MEM32(pContext->VRAMAddr, Off);
+          Data ^= 0xFF000000;
+          RemItems--;
+          if (!RemItems) {
+            WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+            break;
+          }
+          //
+          // no break at this position required...
+          //
+        case 3:
+          Data ^= 0x00FFFFFF;
+          RemItems--;
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          Off++;
+        }
+      }
+      Off0       = Off;
+      RemPixels -= (RemPixels - RemItems);
+    }
+    //
+    // Complete triple DWORDS
+    //
+    if (RemPixels >= 4) {
+      for (RemLines = NumLines; RemLines; RemLines--) {
+        RemItems = RemPixels;
+        Off      = Off0 + OffLine * (RemLines - 1);
+        do {
+          Data  = READ_MEM32(pContext->VRAMAddr, Off + 0);
+          Data ^= 0xFFFFFFFF;
+          WRITE_MEM32(pContext->VRAMAddr, Off + 0, Data);
+          Data  = READ_MEM32(pContext->VRAMAddr, Off + 1);
+          Data ^= 0xFFFFFFFF;
+          WRITE_MEM32(pContext->VRAMAddr, Off + 1, Data);
+          Data  = READ_MEM32(pContext->VRAMAddr, Off + 2);
+          Data ^= 0xFFFFFFFF;
+          WRITE_MEM32(pContext->VRAMAddr, Off + 2, Data);
+          Off += 3;
+        } while ((RemItems -= 4) >= 4);
+      }
+      Off0       = Off;
+      RemPixels -= (RemPixels >> 2) << 2;
+    }
+    //
+    // Last triple DWORD
+    //
+    if (RemPixels) {
+      for (RemLines = NumLines; RemLines; RemLines--) {
+        RemItems = RemPixels;
+        Off      = Off0 + OffLine * (RemLines - 1);
+        
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        Data ^= 0xFFFFFF00;
+        RemItems--;
+        if (!RemItems) {
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          continue;
+        }
+        Data ^= 0x000000FF;
+        WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+        Off++;
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        Data ^= 0xFFFF0000;
+        RemItems--;
+        if (!RemItems) {
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          continue;
+        }
+        Data ^= 0x0000FFFF;
+        WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+        Off++;
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        Data ^= 0xFF000000;
+        WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+      }
+    }
+  } else {
+    ColorIndex = LCD__GetColorIndex();
+    //
+    // First triple DWORD
+    //
+    if (Odd) {
+      for (RemLines = NumLines; RemLines; RemLines--) {
+        RemItems = RemPixels;
+        Off      = Off0 + OffLine * (RemLines - 1);
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        switch (Odd) {
+        case 1:
+          Data &= 0xFFFFFF00;
+          Data |= ColorIndex >> 16;
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          Off++;
+          Data  = READ_MEM32(pContext->VRAMAddr, Off);
+          Data &= 0x0000FFFF;
+          Data |= ColorIndex << 16;
+          RemItems--;
+          if (!RemItems) {
+            WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+            break;
+          }
+          //
+          // no break at this position required...
+          //
+        case 2:
+          Data &= 0xFFFF0000;
+          Data |= ColorIndex >> 8;
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          Off++;
+          Data  = READ_MEM32(pContext->VRAMAddr, Off);
+          Data &= 0x00FFFFFF;
+          Data |= ColorIndex << 24;
+          RemItems--;
+          if (!RemItems) {
+            WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+            break;
+          }
+          //
+          // no break at this position required...
+          //
+        case 3:
+          Data &= 0xFF000000;
+          Data |= ColorIndex;
+          RemItems--;
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          Off++;
+        }
+      }
+      Off0       = Off;
+      RemPixels -= (RemPixels - RemItems);
+    }
+    //
+    // Complete triple DWORDS
+    //
+    if (RemPixels >= 4) {
+      for (RemLines = NumLines; RemLines; RemLines--) {
+        RemItems = RemPixels;
+        Off      = Off0 + OffLine * (RemLines - 1);
+        Data0 = (ColorIndex <<  8) | (ColorIndex >> 16);
+        Data1 = (ColorIndex << 16) | (ColorIndex >>  8);
+        Data2 = (ColorIndex << 24) | (ColorIndex      );
+        do {
+          WRITE_MEM32(pContext->VRAMAddr, Off + 0, Data0);
+          WRITE_MEM32(pContext->VRAMAddr, Off + 1, Data1);
+          WRITE_MEM32(pContext->VRAMAddr, Off + 2, Data2);
+          Off += 3;
+        } while ((RemItems -= 4) >= 4);
+      }
+      Off0       = Off;
+      RemPixels -= (RemPixels >> 2) << 2;
+    }
+    //
+    // Last triple DWORD
+    //
+    if (RemPixels) {
+      for (RemLines = NumLines; RemLines; RemLines--) {
+        RemItems = RemPixels;
+        Off      = Off0 + OffLine * (RemLines - 1);
+
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        Data &= 0x000000FF;
+        Data |= (ColorIndex << 8);
+        RemItems--;
+        if (!RemItems) {
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          continue;
+        }
+        Data &= 0xFFFFFF00;
+        Data |= ColorIndex >> 16;
+        WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+        Off++;
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        Data &= 0x0000FFFF;
+        Data |= ColorIndex << 16;
+        RemItems--;
+        if (!RemItems) {
+          WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+          continue;
+        }
+        Data &= 0xFFFF0000;
+        Data |= ColorIndex >> 8;
+        WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+        Off++;
+        Data  = READ_MEM32(pContext->VRAMAddr, Off);
+        Data &= 0x00FFFFFF;
+        Data |= ColorIndex << 24;
+        WRITE_MEM32(pContext->VRAMAddr, Off, Data);
+      }
+    }
+  }
+#endif
 }
 
 /*************************** End of file ****************************/

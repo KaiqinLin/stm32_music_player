@@ -646,8 +646,13 @@ void ILI9341_OpenWindow ( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t
  */
 void ILI9341_SetCursor ( uint16_t usX, uint16_t usY )  
 {
-  ILI9341_OpenWindow ( usX, usY, 1, 1 );
+  ILI9341_Write_Cmd ( macCMD_SetCoordinateX );          /* 设置X坐标 */
+  ILI9341_Write_Data ( usX >> 8  );                     /* 先高8位，然后低8位 */
+  ILI9341_Write_Data ( usX & 0xff  );
 
+  ILI9341_Write_Cmd ( macCMD_SetCoordinateY );            /* 设置Y坐标*/
+  ILI9341_Write_Data ( usY >> 8  );
+  ILI9341_Write_Data ( usY & 0xff  );
 }
 
 

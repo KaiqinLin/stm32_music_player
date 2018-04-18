@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -104,7 +103,7 @@ static void _Sort(int * p0, int * p1) {
 */
 static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX IndexMask, Index0, Index1, Pixel;
-  unsigned (* pfGetPixelIndex)(GUI_DEVICE *, int, int);
+  LCD_PIXELINDEX (* pfGetPixelIndex)(GUI_DEVICE *, int, int);
   PIXEL * pData;
   int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
@@ -118,7 +117,7 @@ static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 co
   switch (GUI_pContext->DrawMode & (LCD_DRAWMODE_TRANS | LCD_DRAWMODE_XOR)) {
   case 0:
     do {
-      *pData = (PIXEL)(*p & (0x80 >> Diff)) ? Index1 : Index0;
+      *pData = (PIXEL)((*p & (0x80 >> Diff)) ? Index1 : Index0);
       pData += pContext->PixelOffset;
       if (++Diff == 8) {
         Diff = 0;
@@ -129,7 +128,7 @@ static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 co
   case LCD_DRAWMODE_TRANS:
     do {
       if (*p & (0x80 >> Diff)) {
-        *pData = Index1;
+        *pData = (PIXEL)Index1;
       }
       pData += pContext->PixelOffset;
       if (++Diff == 8) {
@@ -146,7 +145,7 @@ static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 co
       if (*p & (0x80 >> Diff)) {
         Pixel = pfGetPixelIndex(pDevice, x, y);
         Pixel ^= IndexMask;
-        *pData = Pixel;
+        *pData = (PIXEL)Pixel;
       }
       pData += pContext->PixelOffset;
       x++;
@@ -481,7 +480,7 @@ static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int x0, int y0,
 *
 *       _GetPixelIndex_CX
 */
-static unsigned int _GetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y) {
+static LCD_PIXELINDEX _GetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y) {
   PIXEL * pData;
   PIXEL Pixel;
   int x_phys, y_phys;
@@ -498,7 +497,7 @@ static unsigned int _GetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y) {
 *
 *       _SetPixelIndex_CX
 */
-static void _SetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) {
+static void _SetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) {
   PIXEL * pData;
   int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
@@ -518,8 +517,8 @@ static void _SetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y, int PixelIndex
 static void _XorPixel_CX(GUI_DEVICE * pDevice, int x, int y) {
   PIXEL Pixel, IndexMask;
 
-  IndexMask = pDevice->pColorConvAPI->pfGetIndexMask();
-  Pixel = pDevice->pDeviceAPI->pfGetPixelIndex(pDevice, x, y);
+  IndexMask = (PIXEL)pDevice->pColorConvAPI->pfGetIndexMask();
+  Pixel = (PIXEL)pDevice->pDeviceAPI->pfGetPixelIndex(pDevice, x, y);
   Pixel ^= IndexMask;
   pDevice->pDeviceAPI->pfSetPixelIndex(pDevice, x, y, Pixel);
 }
@@ -561,7 +560,7 @@ static void _FillRect_CX(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1) {
   pData = pLine = XY2PTR(x0_phys, y0_phys);
   NumLines = y1_phys - y0_phys + 1;
   if (GUI_pContext->DrawMode & LCD_DRAWMODE_XOR) {
-    IndexMask = pDevice->pColorConvAPI->pfGetIndexMask();
+    IndexMask = (PIXEL)pDevice->pColorConvAPI->pfGetIndexMask();
     do {
       pPixel    = pLine;
       NumPixels = x1_phys - x0_phys + 1;
@@ -575,7 +574,7 @@ static void _FillRect_CX(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1) {
     if (sizeof(Pixel) == 1) {
       NumPixels = x1_phys - x0_phys + 1;
       do {
-        GUI_MEMSET((U8 *)pLine, Pixel, NumPixels);
+        GUI__MEMSET((U8 *)pLine, (U8)Pixel, NumPixels);
         pLine += pContext->vxSize;
       } while (--NumLines);
     } else {

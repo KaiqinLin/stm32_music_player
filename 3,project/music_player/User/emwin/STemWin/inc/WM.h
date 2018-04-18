@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -167,13 +166,17 @@ typedef struct {
 } WM_PID_STATE_CHANGED_INFO;
 
 typedef struct {
-  int Cmd;
+  U8  Cmd;
+  U8  FinalMove;
+  U8  StopMotion;
+  U8  IsDragging;
   int dx, dy, da;
   int xPos, yPos;
   int Period;
   int SnapX;
   int SnapY;
-  int FinalMove;
+  U8  IsOutside;
+  unsigned Overlap;
   U32 Flags;
   GUI_PID_STATE * pState;
   GUI_HMEM hContext;
@@ -214,6 +217,7 @@ typedef struct {
 #define WM_GF_PAN    (1 << 2)
 #define WM_GF_ZOOM   (1 << 3)
 #define WM_GF_ROTATE (1 << 4)
+#define WM_GF_DTAP   (1 << 5)
 
 /*********************************************************************
 *
@@ -262,7 +266,7 @@ typedef struct {
 
 #define WM_NOTIFY_CLIENTCHANGE      37      /* Client area may have changed */
 #define WM_NOTIFY_PARENT            38      /* Notify parent. Information is detailed as notification code */
-#define WM_NOTIFY_PARENT_REFLECTION 39      /* Notify parent reflection. 
+#define WM_NOTIFY_PARENT_REFLECTION 39      /* Notify parent reflection.
                                                Sometimes send back as a result of the WM_NOTIFY_PARENT message
                                                to let child react on behalf of its parent.
                                                Information is detailed as notification code */
@@ -448,6 +452,7 @@ void WM_Activate  (void);
 void WM_Deactivate(void);
 void WM_Init      (void);
 int  WM_Exec      (void);    /* Execute all jobs ... Return 0 if nothing was done. */
+int  WM_Exec1     (void);    // Execute only one job
 U32  WM_SetCreateFlags(U32 Flags);
 WM_tfPollPID * WM_SetpfPollPID(WM_tfPollPID * pf);
 
@@ -465,7 +470,7 @@ void    WM_DeleteWindow              (WM_HWIN hWin);
 void    WM_DetachWindow              (WM_HWIN hWin);
 void    WM_EnableGestures            (WM_HWIN hWin, int OnOff);
 int     WM_GetHasTrans               (WM_HWIN hWin);
-WM_HWIN WM_GetFocussedWindow         (void);
+WM_HWIN WM_GetFocusedWindow          (void);
 int     WM_GetInvalidRect            (WM_HWIN hWin, GUI_RECT * pRect);
 int     WM_GetStayOnTop              (WM_HWIN hWin);
 void    WM_HideWindow                (WM_HWIN hWin);
@@ -477,7 +482,7 @@ void    WM_InvalidateWindowAndDescs  (WM_HWIN hWin);    /* not to be documented 
 int     WM_IsEnabled                 (WM_HWIN hObj);
 char    WM_IsCompletelyCovered       (WM_HWIN hWin);    /* Checks if the window is completely covered by other windows */
 char    WM_IsCompletelyVisible       (WM_HWIN hWin);    /* Is the window completely visible ? */
-int     WM_IsFocussable              (WM_HWIN hWin);
+int     WM_IsFocusable               (WM_HWIN hWin);
 int     WM_IsVisible                 (WM_HWIN hWin);
 int     WM_IsWindow                  (WM_HWIN hWin);    /* Check validity */
 void    WM_SetAnchor                 (WM_HWIN hWin, U16 AnchorFlags);
@@ -489,6 +494,9 @@ void    WM_ShowWindow                (WM_HWIN hWin);
 void    WM_ValidateRect              (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM_ValidateWindow            (WM_HWIN hWin);
 
+#define WM_GetFocussedWindow WM_GetFocusedWindow
+#define WM_IsFocussable      WM_IsFocusable
+
 /* Gesture support */
 void WM_GESTURE_Enable  (int OnOff);
 int  WM_GESTURE_EnableEx(int OnOff, int MaxFactor);
@@ -498,12 +506,14 @@ I32  WM_GESTURE_SetThresholdDist (I32 ThresholdDist);
 
 /* Motion support */
 void     WM_MOTION_Enable          (int OnOff);
-void     WM_MOTION_SetMovement     (WM_HWIN hWin, int Axis, I32 Velocity, I32 Dist);
-void     WM_MOTION_SetMotion       (WM_HWIN hWin, int Axis, I32 Velocity, I32 Deceleration);
+void     WM_MOTION_SetMovement     (WM_HWIN hWin, int Axis, I32 Speed, I32 Dist);
+void     WM_MOTION_SetMotion       (WM_HWIN hWin, int Axis, I32 Speed, I32 Deceleration);
 void     WM_MOTION_SetMoveable     (WM_HWIN hWin, U32 Flags, int OnOff);
 void     WM_MOTION_SetDeceleration (WM_HWIN hWin, int Axis, I32 Deceleration);
 unsigned WM_MOTION_SetDefaultPeriod(unsigned Period);
 void     WM_MOTION_SetSpeed        (WM_HWIN hWin, int Axis, I32 Velocity);
+void     WM_MOTION_SetMinMotion    (unsigned MinMotion);
+void     WM_MOTION_SetThreshold    (unsigned Threshold);
 
 /* Motion support, private interface */
 WM_HMEM WM_MOTION__CreateContext(void);
@@ -657,7 +667,8 @@ void WM_EnableMemdev              (WM_HWIN hWin);
 void WM_DisableMemdev             (WM_HWIN hWin);
 
 /* Automatic use of multiple buffers */
-int WM_MULTIBUF_Enable(int OnOff);
+int WM_MULTIBUF_Enable  (int OnOff);
+int WM_MULTIBUF_EnableEx(int OnOff, U32 LayerMask);
 
 extern const GUI_MULTIBUF_API * WM_MULTIBUF__pAPI;
 
@@ -775,7 +786,7 @@ void WM_DIAG_EnableInvalidationColoring(int OnOff);
 
 #if defined(__cplusplus)
 }
-#endif 
+#endif
 
 #endif   /* WM_H */
 

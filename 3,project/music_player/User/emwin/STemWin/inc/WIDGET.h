@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -172,11 +171,13 @@ typedef struct {
 
 #define WIDGET_STATE_FOCUS              (1 << 0)
 #define WIDGET_STATE_VERTICAL           (1 << 3)
-#define WIDGET_STATE_FOCUSSABLE         (1 << 4)
+#define WIDGET_STATE_FOCUSABLE          (1 << 4)
 
 #define WIDGET_STATE_USER0              (1 << 8)    /* Freely available for derived widget */
 #define WIDGET_STATE_USER1              (1 << 9)    /* Freely available for derived widget */
 #define WIDGET_STATE_USER2              (1 << 10)   /* Freely available for derived widget */
+
+#define WIDGET_STATE_FOCUSSABLE         WIDGET_STATE_FOCUSABLE
 
 /*********************************************************************
 *
@@ -213,9 +214,9 @@ typedef struct {
 #define WIDGET_ITEM_GET_RADIUS         28
 #define WIDGET_ITEM_APPLY_PROPS        29  // Not to be documented. Use this message identifier to update the
                                            // properties of attached widgets from <WIDGET>_DrawSkinFlex().
+#define WIDGET_DRAW_BACKGROUND         30
 
-#define WIDGET_DRAW_OVERLAY    WIDGET_ITEM_DRAW_OVERLAY   
-#define WIDGET_DRAW_BACKGROUND WIDGET_ITEM_DRAW_BACKGROUND
+#define WIDGET_DRAW_OVERLAY    WIDGET_ITEM_DRAW_OVERLAY
 
 /*********************************************************************
 *
@@ -293,6 +294,8 @@ void GUI_DRAW__Draw    (GUI_DRAW_HANDLE hDrawObj, WM_HWIN hObj, int x, int y);
 int  GUI_DRAW__GetXSize(GUI_DRAW_HANDLE hDrawObj);
 int  GUI_DRAW__GetYSize(GUI_DRAW_HANDLE hDrawObj);
 
+void GUI_DrawStreamedEnableAuto(void);
+
 /* GUI_DRAW_ Constructurs for different objects */
 WM_HMEM GUI_DRAW_BITMAP_Create  (const GUI_BITMAP* pBitmap, int x, int y);
 WM_HMEM GUI_DRAW_BMP_Create     (const void* pBMP, int x, int y);
@@ -338,6 +341,12 @@ void      WIDGET__RotateRect90       (WIDGET * pWidget, GUI_RECT * pDest, const 
 void      WIDGET__SetScrollState     (WM_HWIN hWin, const WM_SCROLL_STATE * pVState, const WM_SCROLL_STATE * pState);
 void      WIDGET__FillStringInRect   (const char * pText, const GUI_RECT * pFillRect, const GUI_RECT * pTextRectMax, const GUI_RECT * pTextRectAct);
 
+//
+// Function pointers for drawing streamed bitmaps
+//
+extern void (* GUI__pfDrawStreamedBitmap)  (const void * p, int x, int y);
+extern int  (* GUI__pfDrawStreamedBitmapEx)(GUI_GET_DATA_FUNC * pfGetData, const void * p, int x, int y);
+
 /*********************************************************************
 *
 *       API routines
@@ -350,6 +359,7 @@ void  WIDGET_OrState      (WM_HWIN hObj, int State);
 int   WIDGET_HandleActive (WM_HWIN hObj, WM_MESSAGE* pMsg);
 int   WIDGET_GetState     (WM_HWIN hObj);
 int   WIDGET_SetWidth     (WM_HWIN hObj, int Width);
+void  WIDGET_SetFocusable (WM_HWIN hObj, int State);
 
 void  WIDGET_EFFECT_3D_DrawUp(void);
 
@@ -380,6 +390,8 @@ int WIDGET_EFFECT_Simple_GetNumColors(void);
 *
 **********************************************************************
 */
+#define WIDGET_EnableStreamAuto() GUI_DrawStreamedEnableAuto()
+
 #define WIDGET_SetDefaultEffect_3D()     WIDGET_SetDefaultEffect(&WIDGET_Effect_3D)
 #define WIDGET_SetDefaultEffect_3D1L()   WIDGET_SetDefaultEffect(&WIDGET_Effect_3D1L)
 #define WIDGET_SetDefaultEffect_3D2L()   WIDGET_SetDefaultEffect(&WIDGET_Effect_3D2L)
@@ -394,6 +406,4 @@ int WIDGET_EFFECT_Simple_GetNumColors(void);
 
 #endif   /* SLIDER_H */
 
-
-
-
+/*************************** End of file ****************************/

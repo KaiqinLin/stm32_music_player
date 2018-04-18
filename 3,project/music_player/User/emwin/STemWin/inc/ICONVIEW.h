@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -116,39 +115,47 @@ ICONVIEW_Handle ICONVIEW_CreateEx      (int x0, int y0, int xSize, int ySize, WM
 ICONVIEW_Handle ICONVIEW_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int xSizeItems, int ySizeItems, int NumExtraBytes);
 ICONVIEW_Handle ICONVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
-int  ICONVIEW_AddBitmapItem           (ICONVIEW_Handle hObj, const GUI_BITMAP * pBitmap, const char * pText);
-int  ICONVIEW_AddBMPItem              (ICONVIEW_Handle hObj, const U8 * pBMP, const char * pText);
-int  ICONVIEW_AddBMPItemEx            (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, const char * pText);
-int  ICONVIEW_AddStreamedBitmapItem   (ICONVIEW_Handle hObj, const void * pStreamedBitmap, const char * pText);
-void ICONVIEW_DeleteItem              (ICONVIEW_Handle hObj, unsigned Index);
-void ICONVIEW_EnableStreamAuto        (void);
-U32  ICONVIEW_GetItemUserData         (ICONVIEW_Handle hObj, int Index);
-int  ICONVIEW_GetNumItems             (ICONVIEW_Handle hObj);
-int  ICONVIEW_GetItemText             (ICONVIEW_Handle hObj, int Index, char * pBuffer, int MaxSize);
-int  ICONVIEW_GetSel                  (ICONVIEW_Handle hObj);
-int  ICONVIEW_GetUserData             (ICONVIEW_Handle hObj, void * pDest, int NumBytes);
-int  ICONVIEW_InsertBitmapItem        (ICONVIEW_Handle hObj, const GUI_BITMAP * pBitmap, const char * pText, int Index);
-int  ICONVIEW_InsertBMPItem           (ICONVIEW_Handle hObj, const U8 * pBMP, const char * pText, int Index);
-int  ICONVIEW_InsertBMPItemEx         (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, const char * pText, int Index);
-int  ICONVIEW_InsertStreamedBitmapItem(ICONVIEW_Handle hObj, const void * pStreamedBitmap, const char * pText, int Index);
-int  ICONVIEW_SetBitmapItem           (ICONVIEW_Handle hObj, int Index, const GUI_BITMAP * pBitmap);
-void ICONVIEW_SetBkColor              (ICONVIEW_Handle hObj, int Index, GUI_COLOR Color);
-int  ICONVIEW_SetBMPItem              (ICONVIEW_Handle hObj, const U8 * pBMP, int Index);
-int  ICONVIEW_SetBMPItemEx            (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, int Index);
-void ICONVIEW_SetFont                 (ICONVIEW_Handle hObj, const GUI_FONT * pFont);
-void ICONVIEW_SetFrame                (ICONVIEW_Handle hObj, int Coord, int Value);
-void ICONVIEW_SetItemText             (ICONVIEW_Handle hObj, int Index, const char * pText);
-void ICONVIEW_SetItemUserData         (ICONVIEW_Handle hObj, int Index, U32 UserData);
-void ICONVIEW_SetSel                  (ICONVIEW_Handle hObj, int Sel);
-void ICONVIEW_SetSpace                (ICONVIEW_Handle hObj, int Coord, int Value);
-int  ICONVIEW_SetStreamedBitmapItem   (ICONVIEW_Handle hObj, int Index, const void * pStreamedBitmap);
-void ICONVIEW_SetIconAlign            (ICONVIEW_Handle hObj, int IconAlign);
-void ICONVIEW_SetTextAlign            (ICONVIEW_Handle hObj, int TextAlign);
-void ICONVIEW_SetTextColor            (ICONVIEW_Handle hObj, int Index, GUI_COLOR Color);
-int  ICONVIEW_SetUserData             (ICONVIEW_Handle hObj, const void * pSrc, int NumBytes);
-void ICONVIEW_SetWrapMode             (ICONVIEW_Handle hObj, GUI_WRAPMODE WrapMode);
+int          ICONVIEW_AddBitmapItem           (ICONVIEW_Handle hObj, const GUI_BITMAP * pBitmap, const char * pText);
+int          ICONVIEW_AddBMPItem              (ICONVIEW_Handle hObj, const U8 * pBMP, const char * pText);
+int          ICONVIEW_AddBMPItemEx            (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, const char * pText);
+int          ICONVIEW_AddStreamedBitmapItem   (ICONVIEW_Handle hObj, const void * pStreamedBitmap, const char * pText);
+void         ICONVIEW_DeleteItem              (ICONVIEW_Handle hObj, unsigned Index);
+//void         ICONVIEW_EnableStreamAuto        (void);
+U32          ICONVIEW_GetItemUserData         (ICONVIEW_Handle hObj, int Index);
+int          ICONVIEW_GetNumItems             (ICONVIEW_Handle hObj);
+int          ICONVIEW_GetItemText             (ICONVIEW_Handle hObj, int Index, char * pBuffer, int MaxSize);
+int          ICONVIEW_GetSel                  (ICONVIEW_Handle hObj);
+int          ICONVIEW_GetUserData             (ICONVIEW_Handle hObj, void * pDest, int NumBytes);
+GUI_BITMAP * ICONVIEW_GetItemBitmap           (ICONVIEW_Handle hObj, int ItemIndex);
+int          ICONVIEW_InsertBitmapItem        (ICONVIEW_Handle hObj, const GUI_BITMAP * pBitmap, const char * pText, int Index);
+int          ICONVIEW_InsertBMPItem           (ICONVIEW_Handle hObj, const U8 * pBMP, const char * pText, int Index);
+int          ICONVIEW_InsertBMPItemEx         (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, const char * pText, int Index);
+int          ICONVIEW_InsertStreamedBitmapItem(ICONVIEW_Handle hObj, const void * pStreamedBitmap, const char * pText, int Index);
+int          ICONVIEW_OwnerDraw               (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+int          ICONVIEW_SetBitmapItem           (ICONVIEW_Handle hObj, int Index, const GUI_BITMAP * pBitmap);
+void         ICONVIEW_SetBkColor              (ICONVIEW_Handle hObj, int Index, GUI_COLOR Color);
+int          ICONVIEW_SetBMPItem              (ICONVIEW_Handle hObj, const U8 * pBMP, int Index);
+int          ICONVIEW_SetBMPItemEx            (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, int Index);
+void         ICONVIEW_SetFont                 (ICONVIEW_Handle hObj, const GUI_FONT * pFont);
+void         ICONVIEW_SetFrame                (ICONVIEW_Handle hObj, int Coord, int Value);
+void         ICONVIEW_SetItemText             (ICONVIEW_Handle hObj, int Index, const char * pText);
+void         ICONVIEW_SetItemUserData         (ICONVIEW_Handle hObj, int Index, U32 UserData);
+void         ICONVIEW_SetOwnerDraw            (ICONVIEW_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawItem);
+void         ICONVIEW_SetSel                  (ICONVIEW_Handle hObj, int Sel);
+void         ICONVIEW_SetSpace                (ICONVIEW_Handle hObj, int Coord, int Value);
+int          ICONVIEW_SetStreamedBitmapItem   (ICONVIEW_Handle hObj, int Index, const void * pStreamedBitmap);
+void         ICONVIEW_SetIconAlign            (ICONVIEW_Handle hObj, int IconAlign);
+void         ICONVIEW_SetTextAlign            (ICONVIEW_Handle hObj, int TextAlign);
+void         ICONVIEW_SetTextColor            (ICONVIEW_Handle hObj, int Index, GUI_COLOR Color);
+int          ICONVIEW_SetUserData             (ICONVIEW_Handle hObj, const void * pSrc, int NumBytes);
+void         ICONVIEW_SetWrapMode             (ICONVIEW_Handle hObj, GUI_WRAPMODE WrapMode);
 
-void ICONVIEW_Callback(WM_MESSAGE * pMsg);
+void         ICONVIEW_Callback                (WM_MESSAGE * pMsg);
+
+//
+// Compatibility macro
+//
+#define ICONVIEW_EnableStreamAuto() GUI_DrawStreamedEnableAuto()
 
 #if defined(__cplusplus)
   }

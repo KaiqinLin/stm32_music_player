@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -206,7 +205,7 @@ typedef struct {
   WM_HWIN                 hText;
   GUI_RECT                rRestore;
   U16                     Flags;
-  WM_HWIN                 hFocussedChild;  // Handle to focussed child .. default none (0)
+  WM_HWIN                 hFocusedChild;   // Handle to focused child .. default none (0)
   WM_DIALOG_STATUS      * pDialogStatus;
   GUI_HOOK              * pFirstHook;
 } FRAMEWIN_Obj;
@@ -265,3 +264,5 @@ unsigned FRAMEWIN__GetBorderSize  (FRAMEWIN_Handle hObj, unsigned Index);
 
 #endif   // GUI_WINSUPPORT
 #endif   // FRAMEWIN_PRIVATE_H
+
+/*************************** End of file ****************************/

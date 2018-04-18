@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -139,9 +138,9 @@ typedef struct {
 */
 static void _SetPixelIndex(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) {
     ILI9341_SetPointPixel(x, y, PixelIndex);
-    //
-    // Convert logical into physical coordinates (Dep. on LCDConf.h)
-    //
+//    //
+//    // Convert logical into physical coordinates (Dep. on LCDConf.h)
+//    //
 //    #if (LCD_MIRROR_X == 1) || (LCD_MIRROR_Y == 1) || (LCD_SWAP_XY == 1)
 //      int xPhys, yPhys;
 
@@ -500,20 +499,19 @@ static void  _DrawBitLine8BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_U
 *   Only required for 16bpp color depth of target. Should be removed otherwise.
 */
 static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int x, int y, U16 const GUI_UNI_PTR * p, int xsize) {
-/*
-  for (;xsize > 0; xsize--, x++, p++) {
-    _SetPixelIndex(pDevice, x, y, *p);
-  }
-*/
+
   LCD_PIXELINDEX pixel;
-  ILI9341_SetCursor(x, y);
-  LCD->LCD_REG = macCMD_SetPixel;
-  
+  ILI9341_SetCursor(x,y);
+  *(__IO uint16_t *)(FSMC_Addr_ILI9341_CMD)  = macCMD_SetPixel;  //Ð´ÈëÑÕÉ«Öµ
   for (;xsize > 0; xsize--, x++, p++) 
   {
     pixel = *p;
-    LCD->LCD_RAM =pixel;
+        *(__IO uint16_t *)(FSMC_Addr_ILI9341_DATA) = pixel;
   }
+/*  for (;xsize > 0; xsize--, x++, p++) {
+    _SetPixelIndex(pDevice, x, y, *p);
+  }
+*/
 }
 
 /*********************************************************************

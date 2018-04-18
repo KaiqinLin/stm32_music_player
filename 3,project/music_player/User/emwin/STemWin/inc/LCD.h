@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -142,9 +141,9 @@ typedef struct {
 *
 *       LCD_L0_... color conversion
 */
-typedef LCD_COLOR      tLCDDEV_Index2Color  (unsigned Index);
-typedef unsigned int   tLCDDEV_Color2Index  (LCD_COLOR Color);
-typedef unsigned int   tLCDDEV_GetIndexMask (void);
+typedef LCD_COLOR      tLCDDEV_Index2Color  (LCD_PIXELINDEX Index);
+typedef LCD_PIXELINDEX tLCDDEV_Color2Index  (LCD_COLOR Color);
+typedef LCD_PIXELINDEX tLCDDEV_GetIndexMask (void);
 
 typedef void tLCDDEV_Index2ColorBulk(void * pIndex, LCD_COLOR * pColor, U32 NumItems, U8 SizeOfIndex);
 typedef void tLCDDEV_Color2IndexBulk(LCD_COLOR * pColor, void * pIndex, U32 NumItems, U8 SizeOfIndex);
@@ -581,6 +580,13 @@ int LCD_SetChroma    (LCD_COLOR ChromaMin, LCD_COLOR ChromaMax);
 int LCD_SetLUTEntry  (U8 Pos, LCD_COLOR Color);
 int LCD_SetDevFunc   (int LayerIndex, int IdFunc, void (* pDriverFunc)(void));
 
+void LCD_SetOrg(int xOrg, int yOrg);
+
+int LCD_OnEx (int LayerIndex);
+int LCD_OffEx(int LayerIndex);
+int LCD_On   (void);
+int LCD_Off  (void);
+
 /*********************************************************************
 *
 *       Get layer properties
@@ -602,7 +608,7 @@ int LCD_RefreshEx(int LayerIndex);
 */
 typedef struct {
   int  (* pfStart)   (int x0, int y0, int x1, int y1);
-  void (* pfSetPixel)(int PixelIndex);
+  void (* pfSetPixel)(LCD_PIXELINDEX PixelIndex);
   void (* pfNextLine)(void);
   void (* pfEnd)     (void);
 } LCD_API_NEXT_PIXEL;
@@ -663,6 +669,10 @@ void LCD_SetPixelAA4_NoTrans(int x, int y, U8 Intens);
 void LCD_SetPixelAA8_Trans  (int x, int y, U8 Intens);
 void LCD_SetPixelAA8_NoTrans(int x, int y, U8 Intens);
 
+void LCD_AA_EnableGamma(int OnOff);
+void LCD_AA_SetGamma   (U8 * pGamma);
+void LCD_AA_GetGamma   (U8 * pGamma);
+
 LCD_COLOR    LCD_AA_MixColors16 (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
 LCD_COLOR    LCD_AA_MixColors256(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
 LCD_COLOR    LCD_MixColors256   (LCD_COLOR Color, LCD_COLOR BkColor, unsigned Intens);
@@ -677,7 +687,9 @@ U32          LCD_AA_SetAndMask(U32 AndMask);
 #endif
 
 /* Configuration */
-int LCD_SetMaxNumColors(unsigned MaxNumColors);
+int  LCD_SetMaxNumColors(unsigned MaxNumColors);
+int  LCD_GetMaxNumColors(void);
+void LCD__SetPaletteConversionHook(void (* pfPaletteConversionHook)(const LCD_LOGPALETTE * pLogPal));
 
 /*********************************************************************
 *
@@ -733,7 +745,7 @@ int LCD_ControlCacheEx(int LayerIndex, int Cmd);
 *
 *       Color conversion
 */
-unsigned         LCD_Color2Index     (LCD_COLOR Color);
+LCD_PIXELINDEX   LCD_Color2Index     (LCD_COLOR Color);
 LCD_COLOR        LCD_Index2Color     (int Index);
 LCD_COLOR        LCD_Index2ColorEx   (int i, unsigned LayerIndex);
 

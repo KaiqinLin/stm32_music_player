@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -59,6 +58,14 @@ Attention : Do not modify this file ! If you do, you will not
 #define  GUI_CONFDEFAULTS_H
 
 #include "GUIConf.h"
+
+#ifndef   GUI_USE_MIXCOLORS
+  #define GUI_USE_MIXCOLORS 1
+#endif
+
+#ifndef   GUI_USE_BIDI2
+  #define GUI_USE_BIDI2 1
+#endif
 
 #ifndef   LCD_MAX_LOG_COLORS
   #define LCD_MAX_LOG_COLORS 256
@@ -116,7 +123,11 @@ Attention : Do not modify this file ! If you do, you will not
 #endif
 
 #ifndef GUI_BIDI_MAX_CHARS_PER_LINE
-  #define GUI_BIDI_MAX_CHARS_PER_LINE 80
+  #if GUI_USE_BIDI2
+    #define GUI_BIDI_MAX_CHARS_PER_LINE 200
+  #else
+    #define GUI_BIDI_MAX_CHARS_PER_LINE  80
+  #endif
 #endif
 
 #ifndef GUI_SUPPORT_TOUCH
@@ -147,10 +158,6 @@ Attention : Do not modify this file ! If you do, you will not
   #define GUI_CURSOR_LAYER 0
 #endif
 
-#ifndef GUI_MEMCPY
-  #define GUI_MEMCPY(pDest, pSrc, NumBytes) memcpy(pDest, pSrc, NumBytes)
-#endif
-
 #ifndef GUI_SUPPORT_ROTATION
   #define GUI_SUPPORT_ROTATION 1
 #endif
@@ -179,7 +186,11 @@ Attention : Do not modify this file ! If you do, you will not
 #endif
 
 #ifndef   GUI_MEMSET
-  #define GUI_MEMSET GUI__memset
+  #define GUI_MEMSET memset
+#endif
+
+#ifndef GUI_MEMCPY
+  #define GUI_MEMCPY memcpy
 #endif
 
 /* Optional custom drawing of memory devices */

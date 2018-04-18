@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -52,7 +51,7 @@ Purpose     : Display controller initialization
   */
 
 #include "GUI.h"
-#include "./malloc/malloc.h"
+
 /*********************************************************************
 *
 *       Defines
@@ -62,9 +61,8 @@ Purpose     : Display controller initialization
 //
 // Define the available number of bytes available for the GUI
 //
-#define GUI_NUMBYTES  1024*60								//modify by fire 原 0x200000
+#define GUI_NUMBYTES  1024 * 60
 
-#define GUI_BLOCKSIZE 0x80
 /*********************************************************************
 *
 *       Public code
@@ -83,17 +81,15 @@ void GUI_X_Config(void) {
   //
   // 32 bit aligned memory area
   //
-  static U32 aMemory[GUI_NUMBYTES >> 2];
+  static U32 aMemory[GUI_NUMBYTES / 4];
   //
   // Assign memory to emWin
   //
   GUI_ALLOC_AssignMemory(aMemory, GUI_NUMBYTES);
-  
-  GUI_ALLOC_SetAvBlockSize(GUI_BLOCKSIZE);
   //
   // Set default font
   //
-  GUI_SetDefaultFont(GUI_FONT_8X16);
+  GUI_SetDefaultFont(GUI_FONT_6X8);
 }
 
 /*************************** End of file ****************************/

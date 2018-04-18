@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -151,28 +150,28 @@ struct DRIVER_CONTEXT {
 *
 *       _SetPixelIndex_##EXT
 */
-#define DEFINE_SETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                      \
-static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) { \
-  DRIVER_CONTEXT * pContext;                                                           \
-                                                                                       \
-  pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                                    \
-  pContext->xSize = pContext->xSize; /* Keep compiler happy */                         \
-  _SetPixelIndex(pDevice, X_PHYS, Y_PHYS, PixelIndex);                                 \
+#define DEFINE_SETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                                 \
+static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) { \
+  DRIVER_CONTEXT * pContext;                                                                      \
+                                                                                                  \
+  pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                                               \
+  pContext->xSize = pContext->xSize; /* Keep compiler happy */                                    \
+  _SetPixelIndex(pDevice, X_PHYS, Y_PHYS, PixelIndex);                                            \
 }
 
 /*********************************************************************
 *
 *       _GetPixelIndex_##EXT
 */
-#define DEFINE_GETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                              \
-static unsigned int _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y) { \
-  LCD_PIXELINDEX PixelIndex;                                                   \
-  DRIVER_CONTEXT * pContext;                                                   \
-                                                                               \
-  pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                            \
-  pContext->xSize = pContext->xSize; /* Keep compiler happy */                 \
-  PixelIndex = _GetPixelIndex(pDevice, X_PHYS, Y_PHYS);                        \
-  return PixelIndex;                                                           \
+#define DEFINE_GETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                \
+static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y) { \
+  LCD_PIXELINDEX PixelIndex;                                                     \
+  DRIVER_CONTEXT * pContext;                                                     \
+                                                                                 \
+  pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                              \
+  pContext->xSize = pContext->xSize; /* Keep compiler happy */                   \
+  PixelIndex = _GetPixelIndex(pDevice, X_PHYS, Y_PHYS);                          \
+  return PixelIndex;                                                             \
 }
 
 /*********************************************************************

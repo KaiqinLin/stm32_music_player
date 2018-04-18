@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -110,6 +109,14 @@ typedef WM_HMEM LISTBOX_Handle;
 #define LISTBOX_SF_MULTISEL          LISTBOX_CF_MULTISEL
 #define LISTBOX_SF_WRAP              LISTBOX_CF_WRAP
 
+/************************************************************
+*
+*       Fixed scroll mode flags
+*/
+#define LISTBOX_FM_OFF               0  // Turn fixed mode off
+#define LISTBOX_FM_ON                1  // Turn fixed mode on
+#define LISTBOX_FM_CENTER            2  // Set fixed mode to center
+
 /*********************************************************************
 *
 *       Create functions
@@ -144,6 +151,7 @@ void         LISTBOX_AddString       (LISTBOX_Handle hObj, const char * s);
 void         LISTBOX_AddStringH      (LISTBOX_Handle hObj, WM_HMEM hString); /* Not to be documented!!! */
 void         LISTBOX_DecSel          (LISTBOX_Handle hObj);
 void         LISTBOX_DeleteItem      (LISTBOX_Handle hObj, unsigned int Index);
+void         LISTBOX_EnableFixedScrollMode(LISTBOX_Handle hObj, unsigned int OnOff, U8 FixedPos);
 void         LISTBOX_EnableWrapMode  (LISTBOX_Handle hObj, int OnOff);
 unsigned     LISTBOX_GetItemSpacing  (LISTBOX_Handle hObj);
 unsigned     LISTBOX_GetNumItems     (LISTBOX_Handle hObj);
@@ -153,6 +161,7 @@ int          LISTBOX_GetItemDisabled (LISTBOX_Handle hObj, unsigned Index);
 int          LISTBOX_GetItemSel      (LISTBOX_Handle hObj, unsigned Index);
 void         LISTBOX_GetItemText     (LISTBOX_Handle hObj, unsigned Index, char * pBuffer, int MaxSize);
 int          LISTBOX_GetMulti        (LISTBOX_Handle hObj);
+WM_HWIN      LISTBOX_GetOwner        (LISTBOX_Handle hObj);
 int          LISTBOX_GetScrollStepH  (LISTBOX_Handle hObj);
 int          LISTBOX_GetTextAlign    (LISTBOX_Handle hObj);
 int          LISTBOX_GetUserData     (LISTBOX_Handle hObj, void * pDest, int NumBytes);
@@ -193,11 +202,13 @@ int              LISTBOX_GetDefaultScrollStepH (void);
 GUI_COLOR        LISTBOX_GetDefaultBkColor     (unsigned Index);
 int              LISTBOX_GetDefaultTextAlign   (void);
 GUI_COLOR        LISTBOX_GetDefaultTextColor   (unsigned Index);
+int              LISTBOX_GetDefaultScrollMode  (void);
 void             LISTBOX_SetDefaultFont        (const GUI_FONT * pFont);
 void             LISTBOX_SetDefaultScrollStepH (int Value);
 void             LISTBOX_SetDefaultBkColor     (unsigned Index, GUI_COLOR Color);
 void             LISTBOX_SetDefaultTextAlign   (int Align);
 void             LISTBOX_SetDefaultTextColor   (unsigned Index, GUI_COLOR Color);
+void             LISTBOX_SetDefaultScrollMode  (U8 ScrollMode);
 
 /*********************************************************************
 *

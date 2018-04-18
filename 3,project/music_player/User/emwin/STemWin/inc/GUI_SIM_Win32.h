@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -97,6 +96,9 @@ void         SIM_GUI_LOG_Time  (void);
 void __cdecl SIM_GUI_LOG_Add   (const char *format ,... );
 void         SIM_GUI_LOG_AddRed(void);
 void         SIM_GUI_LOG_Clear (void);
+
+void LCDSIM_CalcCompositePixels(int * pxSize, int * pySize);
+const unsigned char * LCDSIM_GetPixelComposite(void);
 
 void LCDSIM_Paint         (HWND hWnd);
 void LCDSIM_PaintComposite(HWND hWnd);

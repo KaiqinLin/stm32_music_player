@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -101,9 +100,11 @@ Purpose     : BUTTON public header file (API)
 *       Skinning property indices
 */
 #define BUTTON_SKINFLEX_PI_PRESSED     0
-#define BUTTON_SKINFLEX_PI_FOCUSSED    1
+#define BUTTON_SKINFLEX_PI_FOCUSED     1
 #define BUTTON_SKINFLEX_PI_ENABLED     2
 #define BUTTON_SKINFLEX_PI_DISABLED    3
+
+#define BUTTON_SKINFLEX_PI_FOCUSSED BUTTON_SKINFLEX_PI_FOCUSED
 
 /*********************************************************************
 *
@@ -185,7 +186,6 @@ void               BUTTON_SetFrameColor      (BUTTON_Handle hObj, GUI_COLOR Colo
 void               BUTTON_SetState           (BUTTON_Handle hObj, int State);                                    /* Not to be doc. */
 void               BUTTON_SetPressed         (BUTTON_Handle hObj, int State);
 GUI_COLOR          BUTTON_SetFocusColor      (BUTTON_Handle hObj, GUI_COLOR Color);
-void               BUTTON_SetFocussable      (BUTTON_Handle hObj, int State);
 void               BUTTON_SetStreamedBitmap  (BUTTON_Handle hObj, unsigned int Index, const GUI_BITMAP_STREAM * pBitmap);
 void               BUTTON_SetStreamedBitmapEx(BUTTON_Handle hObj, unsigned int Index, const GUI_BITMAP_STREAM * pBitmap, int x, int y);
 int                BUTTON_SetText            (BUTTON_Handle hObj, const char* s);
@@ -197,6 +197,9 @@ void               BUTTON_SetSelfDraw        (BUTTON_Handle hObj, unsigned int I
 void               BUTTON_SetReactOnLevel    (void);
 void               BUTTON_SetReactOnTouch    (void);
 int                BUTTON_SetUserData        (BUTTON_Handle hObj, const void * pSrc, int NumBytes);
+
+#define BUTTON_SetFocussable BUTTON_SetFocusable
+#define BUTTON_SetFocusable  WIDGET_SetFocusable
 
 /*********************************************************************
 *

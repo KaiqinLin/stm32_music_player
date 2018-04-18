@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -82,15 +81,16 @@ typedef struct {
 } ICONVIEW_PROPS;
 
 typedef struct {
-  WIDGET          Widget;
-  WM_SCROLL_STATE ScrollStateV;
-  WM_SCROLL_STATE ScrollStateH;
-  ICONVIEW_PROPS  Props;
-  GUI_ARRAY       ItemArray;
-  int             xSizeItems;
-  int             ySizeItems;
-  int             Sel;
-  U16             Flags;
+  WIDGET                  Widget;
+  WM_SCROLL_STATE         ScrollStateV;
+  WM_SCROLL_STATE         ScrollStateH;
+  ICONVIEW_PROPS          Props;
+  GUI_ARRAY               ItemArray;
+  int                     xSizeItems;
+  int                     ySizeItems;
+  int                     Sel;
+  U16                     Flags;
+  WIDGET_DRAW_ITEM_FUNC * pfDrawItem;
 } ICONVIEW_OBJ;
 
 typedef void tDrawImage    (const void * pData, GUI_GET_DATA_FUNC * pfGetData, int xPos, int yPos);
@@ -107,14 +107,6 @@ typedef struct {
   int                 SizeOfData;
   char                acText[1];
 } ICONVIEW_ITEM;
-
-/*********************************************************************
-*
-*       Function pointer(s)
-*
-**********************************************************************
-*/
-extern void (* ICONVIEW__pfDrawStreamedBitmap)(const void * p, int x, int y);
 
 /*********************************************************************
 *

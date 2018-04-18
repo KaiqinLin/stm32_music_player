@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -97,10 +96,10 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
   #define LCD_WRITE_MEM08P(p, Data)            SIM_Lin_WriteMem08p(p, Data)
   #define LCD_WRITE_MEM16P(p, Data)            SIM_Lin_WriteMem16p(p, Data)
   #define LCD_WRITE_MEM32P(p, Data)            SIM_Lin_WriteMem32p(p, Data)
-  #undef  GUI_MEMCPY
-  #define GUI_MEMCPY(pDst, pSrc, Len)          SIM_Lin_memcpy(pDst, pSrc, Len)
-  #undef  GUI_MEMSET
-  #define GUI_MEMSET(pDst, Value, Len)         SIM_Lin_memset(pDst, Value, Len)
+  #undef  GUI__MEMCPY
+  #define GUI__MEMCPY(pDst, pSrc, Len)         SIM_Lin_memcpy(pDst, pSrc, Len)
+  #undef  GUI__MEMSET
+  #define GUI__MEMSET(pDst, Value, Len)        SIM_Lin_memset(pDst, Value, Len)
 #else
   //
   // Access macro definition for hardware
@@ -109,22 +108,40 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
   #define LCD_READ_MEM32(VRAMAddr, Off)        (*((U32 *)VRAMAddr + (U32)Off))
   #define LCD_READ_MEM08P(p)                   (*((U8  *)p))
   #define LCD_READ_MEM32P(p)                   (*((U32 *)p))
-  #define LCD_WRITE_MEM16(VRAMAddr, Off, Data) *((U16 *)VRAMAddr + (U32)Off) = Data
+  #define LCD_WRITE_MEM16(VRAMAddr, Off, Data) *((U16 *)VRAMAddr + (U32)Off) = (U16)(Data)
   #define LCD_WRITE_MEM32(VRAMAddr, Off, Data) *((U32 *)VRAMAddr + (U32)Off) = Data
-  #define LCD_WRITE_MEM08P(p, Data)            *((U8  *)p) = Data
-  #define LCD_WRITE_MEM16P(p, Data)            *((U16 *)p) = Data
+  #define LCD_WRITE_MEM08P(p, Data)            *((U8  *)p) = (U8)(Data)
+  #define LCD_WRITE_MEM16P(p, Data)            *((U16 *)p) = (U16)(Data)
   #define LCD_WRITE_MEM32P(p, Data)            *((U32 *)p) = Data
 #endif
 
-#define WRITE_MEM16(VRAMAddr, Off, Data) LCD_WRITE_MEM16(VRAMAddr, Off, Data)
-#define WRITE_MEM32(VRAMAddr, Off, Data) LCD_WRITE_MEM32(VRAMAddr, Off, Data)
-#define READ_MEM08P(p)                   LCD_READ_MEM08P(p)
-#define READ_MEM16(VRAMAddr, Off)        LCD_READ_MEM16(VRAMAddr, Off)
-#define READ_MEM32(VRAMAddr, Off)        LCD_READ_MEM32(VRAMAddr, Off)
-#define READ_MEM32P(p)                   LCD_READ_MEM32P(p)
-#define WRITE_MEM08P(p, Data)            LCD_WRITE_MEM08P(p, Data)
-#define WRITE_MEM16P(p, Data)            LCD_WRITE_MEM16P(p, Data)
-#define WRITE_MEM32P(p, Data)            LCD_WRITE_MEM32P(p, Data)
+#ifndef   WRITE_MEM16
+  #define WRITE_MEM16(VRAMAddr, Off, Data) LCD_WRITE_MEM16(VRAMAddr, Off, Data)
+#endif
+#ifndef   WRITE_MEM32
+  #define WRITE_MEM32(VRAMAddr, Off, Data) LCD_WRITE_MEM32(VRAMAddr, Off, Data)
+#endif
+#ifndef   READ_MEM08P
+  #define READ_MEM08P(p)                   LCD_READ_MEM08P(p)
+#endif
+#ifndef   READ_MEM16
+  #define READ_MEM16(VRAMAddr, Off)        LCD_READ_MEM16(VRAMAddr, Off)
+#endif
+#ifndef   READ_MEM32
+  #define READ_MEM32(VRAMAddr, Off)        LCD_READ_MEM32(VRAMAddr, Off)
+#endif
+#ifndef   READ_MEM32P
+  #define READ_MEM32P(p)                   LCD_READ_MEM32P(p)
+#endif
+#ifndef   WRITE_MEM08P
+  #define WRITE_MEM08P(p, Data)            LCD_WRITE_MEM08P(p, Data)
+#endif
+#ifndef   WRITE_MEM16P
+  #define WRITE_MEM16P(p, Data)            LCD_WRITE_MEM16P(p, Data)
+#endif
+#ifndef   WRITE_MEM32P
+  #define WRITE_MEM32P(p, Data)            LCD_WRITE_MEM32P(p, Data)
+#endif
 
 #define OFF2PTR08(VRAMAddr, Off)     (U8  *)((U8 *)VRAMAddr + (Off     ))
 #define OFF2PTR16(VRAMAddr, Off)     (U16 *)((U8 *)VRAMAddr + (Off << 1))
@@ -180,7 +197,10 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
                         int /* x1 */,                         \
                         int /* y1 */,                         \
                         int /* xSize */,                      \
-                        int /* ySize */);
+                        int /* ySize */);                     \
+  void (* pfSetPos)    (int /* LayerIndex */,                 \
+                        int /* xPos */,                       \
+                        int /* yPos */);
 
 #ifndef   PRIVATE_CONTEXT_MEMBERS
   #define PRIVATE_CONTEXT_MEMBERS
@@ -256,6 +276,9 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
       break;                                                                                                                                                                 \
     case LCD_DEVFUNC_COPYRECT:                                                                                                                                               \
       pContext->pfCopyRect   = (void (*)(int LayerIndex, int x0, int y0, int x1, int y1, int xSize, int ySize))pFunc;                                                        \
+      break;                                                                                                                                                                 \
+    case LCD_DEVFUNC_SETPOS:                                                                                                                                                 \
+      pContext->pfSetPos     = (void (*)(int LayerIndex, int xPos, int yPos))pFunc;                                                                                          \
       break;
 
 //
@@ -376,47 +399,57 @@ static void _SetPos(GUI_DEVICE * pDevice, int xPos, int yPos) {
   _InitOnce(pDevice);
   if (pDevice->u.pContext) {
     pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
-    pContext->xPos = xPos;
-    pContext->yPos = yPos;
+    if (pContext->pfSetPos) {
+      //
+      // Use custom callback to setlayer position
+      //
+      pContext->pfSetPos(pDevice->LayerIndex, xPos, yPos);
+    } else {
+      //
+      // Calculate xPos/yPos and new layer size
+      //
+      pContext->xPos = xPos;
+      pContext->yPos = yPos;
 
-    xSizeDisplay  = LCD_GetXSizeDisplay();
-    ySizeDisplay  = LCD_GetYSizeDisplay();
-    xSizeLayer    = pContext->xSize;
-    ySizeLayer    = pContext->ySize;
-    BitsPerPixel  = pDevice->pDeviceAPI->pfGetDevProp(pDevice, LCD_DEVCAP_BITSPERPIXEL);
-    PosInfo.BytesPerPixel = (BitsPerPixel + 7) / 8;
-    if (xPos < 0) {
-      PosInfo.Off -= xPos * PosInfo.BytesPerPixel;
-      PosInfo.xPos = 0;
-      PosInfo.xLen = xSizeLayer + xPos;
-    } else {
-      PosInfo.xPos = xPos;
-      PosInfo.xLen = xSizeLayer;
-      if ((PosInfo.xPos + PosInfo.xLen) > xSizeDisplay) {
-        PosInfo.xLen = xSizeDisplay - xPos;
+      xSizeDisplay  = LCD_GetXSizeDisplay();
+      ySizeDisplay  = LCD_GetYSizeDisplay();
+      xSizeLayer    = pContext->xSize;
+      ySizeLayer    = pContext->ySize;
+      BitsPerPixel  = pDevice->pDeviceAPI->pfGetDevProp(pDevice, LCD_DEVCAP_BITSPERPIXEL);
+      PosInfo.BytesPerPixel = (BitsPerPixel + 7) / 8;
+      if (xPos < 0) {
+        PosInfo.Off -= xPos * PosInfo.BytesPerPixel;
+        PosInfo.xPos = 0;
+        PosInfo.xLen = xSizeLayer + xPos;
+      } else {
+        PosInfo.xPos = xPos;
+        PosInfo.xLen = xSizeLayer;
+        if ((PosInfo.xPos + PosInfo.xLen) > xSizeDisplay) {
+          PosInfo.xLen = xSizeDisplay - xPos;
+        }
       }
-    }
-    if (yPos < 0) {
-      PosInfo.Off -= yPos * PosInfo.BytesPerPixel * xSizeLayer;
-      PosInfo.yPos = 0;
-      PosInfo.yLen = ySizeLayer + yPos;
-    } else {
-      PosInfo.yPos = yPos;
-      PosInfo.yLen = ySizeLayer;
-      if ((PosInfo.yPos + PosInfo.yLen) > ySizeDisplay) {
-        PosInfo.yLen = ySizeDisplay - yPos;
+      if (yPos < 0) {
+        PosInfo.Off -= yPos * PosInfo.BytesPerPixel * xSizeLayer;
+        PosInfo.yPos = 0;
+        PosInfo.yLen = ySizeLayer + yPos;
+      } else {
+        PosInfo.yPos = yPos;
+        PosInfo.yLen = ySizeLayer;
+        if ((PosInfo.yPos + PosInfo.yLen) > ySizeDisplay) {
+          PosInfo.yLen = ySizeDisplay - yPos;
+        }
       }
-    }
-    if ((PosInfo.xLen <= 0) || (PosInfo.yLen <= 0) || (PosInfo.xPos >= xSizeDisplay) || (PosInfo.yPos >= ySizeDisplay)) {
-      if (pContext->IsVisible == 1) {
-        _SetVis(pDevice, 0);
+      if ((PosInfo.xLen <= 0) || (PosInfo.yLen <= 0) || (PosInfo.xPos >= xSizeDisplay) || (PosInfo.yPos >= ySizeDisplay)) {
+        if (pContext->IsVisible == 1) {
+          _SetVis(pDevice, 0);
+        }
+        return;
       }
-      return;
+      if (pContext->IsVisible == 0) {
+        _SetVis(pDevice, 1);
+      }
+      LCD_X_DisplayDriver(pDevice->LayerIndex, LCD_X_SETPOS, (void *)&PosInfo);
     }
-    if (pContext->IsVisible == 0) {
-      _SetVis(pDevice, 1);
-    }
-    LCD_X_DisplayDriver(pDevice->LayerIndex, LCD_X_SETPOS, (void *)&PosInfo);
   }
 }
 
@@ -568,7 +601,7 @@ static void _CopyBuffer(GUI_DEVICE * pDevice, int IndexSrc, int IndexDst) {
         SIM_Lin_CopyBuffer(IndexSrc, IndexDst);
       #else
         BitsPerPixel = pDevice->pDeviceAPI->pfGetDevProp(pDevice, LCD_DEVCAP_BITSPERPIXEL);
-        BufferSize = (((U32)pContext->xSize * pContext->ySize * BitsPerPixel) >> 3);
+        BufferSize = (((U32)pContext->vxSize * pContext->ySize * BitsPerPixel) >> 3);
         AddrSrc = pContext->BaseAddr + BufferSize * IndexSrc;
         AddrDst = pContext->BaseAddr + BufferSize * IndexDst;
         if (pContext->pfCopyBuffer) {
@@ -580,7 +613,7 @@ static void _CopyBuffer(GUI_DEVICE * pDevice, int IndexSrc, int IndexDst) {
           //
           // Calculate pointers for copy operation
           //
-          GUI_MEMCPY((void *)AddrDst, (void *)AddrSrc, BufferSize);
+          GUI__MEMCPY((void *)AddrDst, (void *)AddrSrc, BufferSize);
         }
         //
         // Set destination buffer as target for further drawing operations

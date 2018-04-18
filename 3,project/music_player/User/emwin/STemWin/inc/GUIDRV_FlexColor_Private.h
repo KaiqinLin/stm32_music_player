@@ -1,16 +1,15 @@
 /*********************************************************************
-*          Portions COPYRIGHT 2016 STMicroelectronics                *
-*          Portions SEGGER Microcontroller GmbH & Co. KG             *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.32 - Graphical user interface for embedded applications **
+** emWin V5.40 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -158,10 +157,12 @@ struct DRIVER_CONTEXT {
   U16  (* pfReadPixel_16bpp_B8) (DRIVER_CONTEXT * _pContext);
   U32  (* pfReadPixel_18bpp_B9) (DRIVER_CONTEXT * _pContext);
   U32  (* pfReadPixel_18bpp_B18)(DRIVER_CONTEXT * _pContext);
+  U32  (* pfReadPixel_32bpp_B8) (DRIVER_CONTEXT * _pContext);
   void (* pfReadRect_16bpp_B16) (GUI_DEVICE * _pDevice, int _x0, int _y0, int _x1, int _y1, U16 * _pBuffer);
   void (* pfReadRect_16bpp_B8)  (GUI_DEVICE * _pDevice, int _x0, int _y0, int _x1, int _y1, U16 * _pBuffer);
   void (* pfReadRect_18bpp_B9)  (GUI_DEVICE * _pDevice, int _x0, int _y0, int _x1, int _y1, U32 * _pBuffer);
   void (* pfReadRect_18bpp_B18) (GUI_DEVICE * _pDevice, int _x0, int _y0, int _x1, int _y1, U32 * _pBuffer);
+  void (* pfReadRect_32bpp_B8)  (GUI_DEVICE * _pDevice, int _x0, int _y0, int _x1, int _y1, U32 * _pBuffer);
   //
   // Custom read functions
   //
@@ -172,12 +173,12 @@ struct DRIVER_CONTEXT {
   //
   // Mode dependent drawing functions
   //
-  void    (* pfDrawBitmap   )(GUI_DEVICE *  _pDevice, int _x0, int _y0, int _xsize, int _ysize, int _BitsPerPixel, int _BytesPerLine, const U8 * _pData, int _Diff, const LCD_PIXELINDEX * _pTrans);
-  void    (* pfFillRect     )(GUI_DEVICE *  _pDevice, int _x0, int _y0, int _x1, int _y1);
-  unsigned(* pfGetPixelIndex)(GUI_DEVICE *  _pDevice, int _x, int _y);
-  void    (* pfSetPixelIndex)(GUI_DEVICE *  _pDevice, int _x, int _y, int _ColorIndex);
-  int     (* pfControlCache )(GUI_DEVICE *  _pDevice, int _Cmd);
-  void    (* pfRefresh      )(GUI_DEVICE *  _pDevice);
+  void          (* pfDrawBitmap   )(GUI_DEVICE *  _pDevice, int _x0, int _y0, int _xsize, int _ysize, int _BitsPerPixel, int _BytesPerLine, const U8 * _pData, int _Diff, const LCD_PIXELINDEX * _pTrans);
+  void          (* pfFillRect     )(GUI_DEVICE *  _pDevice, int _x0, int _y0, int _x1, int _y1);
+  LCD_PIXELINDEX(* pfGetPixelIndex)(GUI_DEVICE *  _pDevice, int _x, int _y);
+  void          (* pfSetPixelIndex)(GUI_DEVICE *  _pDevice, int _x, int _y, LCD_PIXELINDEX _ColorIndex);
+  int           (* pfControlCache )(GUI_DEVICE *  _pDevice, int _Cmd);
+  void          (* pfRefresh      )(GUI_DEVICE *  _pDevice);
   //
   // Controller dependent function pointers
   //
@@ -213,11 +214,12 @@ void GUIDRV_FlexColor__SetCacheAddr   (DRIVER_CONTEXT * pContext, int x, int y);
 void GUIDRV_FlexColor__SetCacheRect   (DRIVER_CONTEXT * pContext, int x0, int y0, int x1, int y1);
 void GUIDRV_FlexColor__SetLog2Phys    (DRIVER_CONTEXT * pContext);
 void GUIDRV_FlexColor__SetSubRect     (DRIVER_CONTEXT * pContext, int x0, int y0, int x1, int y1);
+void GUIDRV_FlexColor__ClearCacheRect (DRIVER_CONTEXT * pContext);
 
-unsigned int GUIDRV_FlexColor__GetPixelIndexCache  (GUI_DEVICE * pDevice, int x, int y);
-void         GUIDRV_FlexColor__SetPixelIndexCache  (GUI_DEVICE * pDevice, int x, int y, int PixelIndex);
-unsigned int GUIDRV_FlexColor__GetPixelIndexNoCache(GUI_DEVICE * pDevice, int x, int y);
-void         GUIDRV_FlexColor__SetPixelIndexNoCache(GUI_DEVICE * pDevice, int x, int y, int PixelIndex);
+LCD_PIXELINDEX GUIDRV_FlexColor__GetPixelIndexCache  (GUI_DEVICE * pDevice, int x, int y);
+void           GUIDRV_FlexColor__SetPixelIndexCache  (GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex);
+LCD_PIXELINDEX GUIDRV_FlexColor__GetPixelIndexNoCache(GUI_DEVICE * pDevice, int x, int y);
+void           GUIDRV_FlexColor__SetPixelIndexNoCache(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex);
 
 void GUIDRV_FlexColor__SetFunc66712(GUI_DEVICE * pDevice, U16 AndMask_SetAddrRAM);
 
@@ -236,6 +238,7 @@ void GUIDRV_FlexColor__SetFunc66712(GUI_DEVICE * pDevice, U16 AndMask_SetAddrRAM
   void SIM_FlexColor_SetBus9     (GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetBus16    (GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetBus32    (GUI_DEVICE * pDevice, int Shift);
+  void SIM_FlexColor_SetBus8_24  (GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetFunc66702(GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetFunc66708(GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetFunc66709(GUI_DEVICE * pDevice);
@@ -247,6 +250,7 @@ void GUIDRV_FlexColor__SetFunc66712(GUI_DEVICE * pDevice, U16 AndMask_SetAddrRAM
   void SIM_FlexColor_SetFunc66720(GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetFunc66721(GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetFunc66722(GUI_DEVICE * pDevice);
+  void SIM_FlexColor_SetFunc66723(GUI_DEVICE * pDevice);
   void SIM_FlexColor_SetFunc66772(GUI_DEVICE * pDevice);
 
 #endif
