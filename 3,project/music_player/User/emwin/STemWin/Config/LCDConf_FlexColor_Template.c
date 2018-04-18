@@ -168,6 +168,10 @@ void LCD_X_Config(void) {
   CONFIG_FLEXCOLOR Config = {0};
   GUI_PORT_API PortAPI = {0};
 */
+/*
+  uint8_t  ori;
+  uint16_t x0 = 3782, x1 = 149, y0 = 3715, y1 = 198;
+*/
   //
   // Set display driver and color conversion
   //
@@ -175,8 +179,13 @@ void LCD_X_Config(void) {
   //
   // Display driver configuration, required for Lin-driver
   //
+/*
   LCD_SetSizeEx (0, XSIZE_PHYS , YSIZE_PHYS);
   LCD_SetVSizeEx(0, VXSIZE_PHYS, VYSIZE_PHYS);
+  GUI_TOUCH_SetOrientation(ori); 
+  GUI_TOUCH_Calibrate(GUI_COORD_X, 0, 240, x0, x1);
+  GUI_TOUCH_Calibrate(GUI_COORD_Y, 0, 320, y0, y1);
+*/
 /*
   //
   // Orientation

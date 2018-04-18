@@ -269,11 +269,11 @@ static void XPT2046_ReadAdc_XY ( int16_t * sX_Ad, int16_t * sY_Ad )
 
   
   
-  sX_Ad_Temp = XPT2046_ReadAdc ( macXPT2046_CHANNEL_X );
+  sX_Ad_Temp = XPT2046_ReadAdc ( macXPT2046_CHANNEL_Y );
 
   XPT2046_DelayUS ( 1 ); 
 
-  sY_Ad_Temp = XPT2046_ReadAdc ( macXPT2046_CHANNEL_Y ); 
+  sY_Ad_Temp = XPT2046_ReadAdc ( macXPT2046_CHANNEL_X ); 
   
   
   * sX_Ad = sX_Ad_Temp; 

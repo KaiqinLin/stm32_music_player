@@ -52,10 +52,10 @@
 
 /******************************* XPT2046 parameter definition ***************************/
 #define             macXPT2046_Coordinate_GramScan                  5               //select the XPT2046 scan orientation
-#define             macXPT2046_THRESHOLD_CalDiff                    2               //校准触摸屏时触摸坐标的AD值相差门限 
+#define             macXPT2046_THRESHOLD_CalDiff                    4               //校准触摸屏时触摸坐标的AD值相差门限 
 
-#define              macXPT2046_CHANNEL_X                             0x90             //通道Y+的选择控制字  
-#define              macXPT2046_CHANNEL_Y                             0xd0            //通道X+的选择控制字
+#define              macXPT2046_CHANNEL_X                             0x90             //x channel to detect the y-axis
+#define              macXPT2046_CHANNEL_Y                             0xd0            //y channel to detect the x-aixs
 
 
 
