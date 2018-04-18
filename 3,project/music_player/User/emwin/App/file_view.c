@@ -1,19 +1,3 @@
-#include "./ui/ui.h"
-#include "./scheduler/scheduler.h"
-#include "GUI.h"
-
-ui_ctx_t   ui_ctx;
-
-void sys_gui_init(task_t *s, void *ctx)
-{
-    
-}
-
-
-void gui_task(task_t *s, void *ctx)
-{
-   
-}
 /*********************************************************************
 *                                                                    *
 *                SEGGER Microcontroller GmbH & Co. KG                *
@@ -45,9 +29,9 @@ void gui_task(task_t *s, void *ctx)
 *
 **********************************************************************
 */
-#define ID_FRAMEWIN_0 (GUI_ID_USER + 0x00)
-#define ID_LISTVIEW_0 (GUI_ID_USER + 0x01)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x02)
+#define ID_FRAMEWIN_0 (GUI_ID_USER + 0x06)
+#define ID_LISTVIEW_0 (GUI_ID_USER + 0x07)
+#define ID_BUTTON_0 (GUI_ID_USER + 0x08)
 
 
 // USER START (Optionally insert additional defines)
@@ -68,9 +52,9 @@ void gui_task(task_t *s, void *ctx)
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { FRAMEWIN_CreateIndirect, "Framewin", ID_FRAMEWIN_0, 0, 0, 320, 240, 0, 0x0, 0 },
-  { LISTVIEW_CreateIndirect, "Listview", ID_LISTVIEW_0, 84, 104, 215, 108, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 250, 16, 49, 38, 0, 0x0, 0 },
+  { FRAMEWIN_CreateIndirect, "Framewin", ID_FRAMEWIN_0, 0, 0, 320, 240, 0, 0x64, 0 },
+  { LISTVIEW_CreateIndirect, "Listview", ID_LISTVIEW_0, 0, 0, 250, 216, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 260, 170, 40, 40, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -99,12 +83,18 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
   case WM_INIT_DIALOG:
     //
+    // Initialization of 'Framewin'
+    //
+    hItem = pMsg->hWin;
+    FRAMEWIN_SetTitleHeight(hItem, 14);
+    FRAMEWIN_SetText(hItem, "MUSIC");
+    FRAMEWIN_SetTextAlign(hItem, GUI_TA_HCENTER | GUI_TA_VCENTER);
+    //
     // Initialization of 'Listview'
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_LISTVIEW_0);
-    LISTVIEW_AddColumn(hItem, 30, "Col 0", GUI_TA_HCENTER | GUI_TA_VCENTER);
-    LISTVIEW_AddColumn(hItem, 30, "Col 1", GUI_TA_HCENTER | GUI_TA_VCENTER);
-    LISTVIEW_AddColumn(hItem, 30, "Col 2", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddColumn(hItem, 70, "singer", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddColumn(hItem, 180, "title", GUI_TA_HCENTER | GUI_TA_VCENTER);
     LISTVIEW_AddRow(hItem, NULL);
     LISTVIEW_SetGridVis(hItem, 1);
     // USER START (Optionally insert additional code for further widget initialization)
@@ -168,8 +158,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 *
 *       CreateFramewin
 */
-WM_HWIN CreateFramewin(void);
-WM_HWIN CreateFramewin(void) {
+WM_HWIN CreateFramewin_file(void);
+WM_HWIN CreateFramewin_file(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
@@ -180,18 +170,3 @@ WM_HWIN CreateFramewin(void) {
 // USER END
 
 /*************************** End of file ****************************/
-
-void ui_task(void)
-{
-  /* 初始 emWin */ 
-//  GUI_Init(); 
- 
-  /* 创建对话框 */ 
-    CreateFramewin(); 
- 
-  while(1) 
-  { 
-    GUI_Delay(10); 
-  }
-}
-

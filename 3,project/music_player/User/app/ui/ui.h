@@ -8,7 +8,7 @@ typedef struct _ui_ctx_t {
 
 extern ui_ctx_t   ui_ctx;
 
-void MainTask(void);
+void ui_task(void);
 
 #endif /* __UI_H*/
 

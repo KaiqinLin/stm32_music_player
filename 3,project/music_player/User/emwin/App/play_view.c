@@ -1,19 +1,3 @@
-#include "./ui/ui.h"
-#include "./scheduler/scheduler.h"
-#include "GUI.h"
-
-ui_ctx_t   ui_ctx;
-
-void sys_gui_init(task_t *s, void *ctx)
-{
-    
-}
-
-
-void gui_task(task_t *s, void *ctx)
-{
-   
-}
 /*********************************************************************
 *                                                                    *
 *                SEGGER Microcontroller GmbH & Co. KG                *
@@ -45,9 +29,11 @@ void gui_task(task_t *s, void *ctx)
 *
 **********************************************************************
 */
-#define ID_FRAMEWIN_0 (GUI_ID_USER + 0x00)
-#define ID_LISTVIEW_0 (GUI_ID_USER + 0x01)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x02)
+#define ID_FRAMEWIN_0 (GUI_ID_USER + 0x03)
+#define ID_BUTTON_0 (GUI_ID_USER + 0x04)
+#define ID_BUTTON_1 (GUI_ID_USER + 0x05)
+#define ID_BUTTON_2 (GUI_ID_USER + 0x06)
+#define ID_PROGBAR_0 (GUI_ID_USER + 0x07)
 
 
 // USER START (Optionally insert additional defines)
@@ -69,8 +55,10 @@ void gui_task(task_t *s, void *ctx)
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { FRAMEWIN_CreateIndirect, "Framewin", ID_FRAMEWIN_0, 0, 0, 320, 240, 0, 0x0, 0 },
-  { LISTVIEW_CreateIndirect, "Listview", ID_LISTVIEW_0, 84, 104, 215, 108, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 250, 16, 49, 38, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "<", ID_BUTTON_0, 60, 180, 40, 40, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, ">", ID_BUTTON_1, 220, 180, 40, 40, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "||", ID_BUTTON_2, 140, 180, 40, 40, 0, 0x0, 0 },
+  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 60, 155, 200, 10, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -99,14 +87,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
   case WM_INIT_DIALOG:
     //
-    // Initialization of 'Listview'
+    // Initialization of 'Framewin'
     //
-    hItem = WM_GetDialogItem(pMsg->hWin, ID_LISTVIEW_0);
-    LISTVIEW_AddColumn(hItem, 30, "Col 0", GUI_TA_HCENTER | GUI_TA_VCENTER);
-    LISTVIEW_AddColumn(hItem, 30, "Col 1", GUI_TA_HCENTER | GUI_TA_VCENTER);
-    LISTVIEW_AddColumn(hItem, 30, "Col 2", GUI_TA_HCENTER | GUI_TA_VCENTER);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_SetGridVis(hItem, 1);
+    hItem = pMsg->hWin;
+    FRAMEWIN_SetTitleVis(hItem, 0);
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END
     break;
@@ -114,7 +98,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
     switch(Id) {
-    case ID_LISTVIEW_0: // Notifications sent by 'Listview'
+    case ID_BUTTON_0: // Notifications sent by '<'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
@@ -124,7 +108,17 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
         // USER END
         break;
-      case WM_NOTIFICATION_SEL_CHANGED:
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    case ID_BUTTON_1: // Notifications sent by '>'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
         // USER END
         break;
@@ -132,7 +126,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       // USER END
       }
       break;
-    case ID_BUTTON_0: // Notifications sent by 'Button'
+    case ID_BUTTON_2: // Notifications sent by '||'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
@@ -168,8 +162,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 *
 *       CreateFramewin
 */
-WM_HWIN CreateFramewin(void);
-WM_HWIN CreateFramewin(void) {
+WM_HWIN CreateFramewin_play(void);
+WM_HWIN CreateFramewin_play(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
@@ -180,18 +174,3 @@ WM_HWIN CreateFramewin(void) {
 // USER END
 
 /*************************** End of file ****************************/
-
-void ui_task(void)
-{
-  /* 初始 emWin */ 
-//  GUI_Init(); 
- 
-  /* 创建对话框 */ 
-    CreateFramewin(); 
- 
-  while(1) 
-  { 
-    GUI_Delay(10); 
-  }
-}
-

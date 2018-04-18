@@ -179,9 +179,9 @@ void LCD_X_Config(void) {
   //
   // Display driver configuration, required for Lin-driver
   //
-/*
   LCD_SetSizeEx (0, XSIZE_PHYS , YSIZE_PHYS);
   LCD_SetVSizeEx(0, VXSIZE_PHYS, VYSIZE_PHYS);
+/*
   GUI_TOUCH_SetOrientation(ori); 
   GUI_TOUCH_Calibrate(GUI_COORD_X, 0, 240, x0, x1);
   GUI_TOUCH_Calibrate(GUI_COORD_Y, 0, 320, y0, y1);
