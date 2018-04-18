@@ -399,7 +399,7 @@ static void ILI9341_REG_Config ( void )
   macDEBUG_DELAY ();
   
   /* column address control set */
-  ILI9341_Write_Cmd ( macCMD_SetCoordinateX ); 
+  ILI9341_Write_Cmd ( macCMD_SetCoordinateY ); 
   ILI9341_Write_Data ( 0x00 );
   ILI9341_Write_Data ( 0x00 );
   ILI9341_Write_Data ( 0x00 );
@@ -407,7 +407,7 @@ static void ILI9341_REG_Config ( void )
   
   /* page address control set */
   macDEBUG_DELAY ();
-  ILI9341_Write_Cmd ( macCMD_SetCoordinateY ); 
+  ILI9341_Write_Cmd ( macCMD_SetCoordinateX ); 
   ILI9341_Write_Data ( 0x00 );
   ILI9341_Write_Data ( 0x00 );
   ILI9341_Write_Data ( 0x01 );
@@ -691,7 +691,22 @@ void ILI9341_Clear ( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHe
   ILI9341_OpenWindow ( usX, usY, usWidth, usHeight );
 
   ILI9341_FillColor ( usWidth * usHeight, usColor );    
-  
+
+}
+void ILI9341_Fill( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHeight, uint16_t usColor )
+{
+  uint16_t i, j;
+  uint16_t xlen = 0;
+  uint16_t temp;
+
+  xlen = usWidth - usX + 1;
+  for (i = usY; i <= usHeight; i++) {
+    ILI9341_SetCursor(usX, i);                   //设置光标位置 
+    ILI9341_Write_Cmd(macCMD_SetPixel);          //开始写入GRAM    
+    for (j = 0; j < xlen; j++) {
+      LCD->LCD_RAM = usColor;     //显示颜色       
+    }
+  }
 }
 
 

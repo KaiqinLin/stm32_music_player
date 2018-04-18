@@ -100,9 +100,9 @@ int main(void)
 //  GUIDEMO_Main();
   while(1)
   {
-    lcd_test_case();
+//    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
-//    gui_touch_test_case();
+    gui_touch_test_case();
 //    main_loop(&g_sched);
 //    MainTask();
 //    player_task(NULL, &play_ctx);

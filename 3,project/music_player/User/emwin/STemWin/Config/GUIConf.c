@@ -62,6 +62,7 @@ Purpose     : Display controller initialization
 // Define the available number of bytes available for the GUI
 //
 #define GUI_NUMBYTES  1024 * 60
+#define GUI_BLOCKSIZE 0X80
 
 /*********************************************************************
 *
@@ -86,6 +87,7 @@ void GUI_X_Config(void) {
   // Assign memory to emWin
   //
   GUI_ALLOC_AssignMemory(aMemory, GUI_NUMBYTES);
+  GUI_ALLOC_SetAvBlockSize(GUI_BLOCKSIZE);
   //
   // Set default font
   //

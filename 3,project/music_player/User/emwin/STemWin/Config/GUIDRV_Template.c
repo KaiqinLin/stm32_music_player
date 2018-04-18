@@ -226,9 +226,11 @@ static void _XorPixel(GUI_DEVICE * pDevice, int x, int y) {
 *       _FillRect
 */
 static void _FillRect(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1) {
+/*
   LCD_PIXELINDEX PixelIndex;
   int x;
-  ILI9341_Clear(x0, y0, x1, y1, LCD_COLORINDEX);
+*/
+  ILI9341_Fill(x0, y0, x1, y1, LCD_COLORINDEX);
 /*
   PixelIndex = LCD__GetColorIndex();
   if (GUI_pContext->DrawMode & LCD_DRAWMODE_XOR) {
