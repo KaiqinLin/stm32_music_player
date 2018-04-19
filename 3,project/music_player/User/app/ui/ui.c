@@ -21,11 +21,6 @@ void sys_gui_init(task_t *s, void *ctx)
      debug("%s\r\n", g_music_process.music_content[i]);
   }
 
-  ff_refresh_music_file(&g_music_process);
-
-  for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
-     debug("%s\r\n", g_music_process.music_content[i]);
-  }
   g_page[0] = Createplay_view();
   g_page[1] = Createfile_view();
   WM_HideWindow(g_page[1]);
@@ -51,6 +46,7 @@ void gui_task(task_t *s, void *ctx)
        //TODO Refresh the list
      } else if (g_key_input_ctx.right_flag == 1) {
        //TODO Refresh the list
+       ff_refresh_music_file(&g_music_process);
      } else if (g_key_input_ctx.back_flag == 1) {
        pctx->current_win = PLAYING;
        WM_HideWindow(g_page[1]);
