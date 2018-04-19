@@ -14,12 +14,18 @@ ui_ctx_t g_ui_ctx = {
 
 void sys_gui_init(task_t *s, void *ctx)
 {
-  ff_refresh_music_file(g_music_content);
+  ff_open_dir(&g_music_process);
+  ff_refresh_music_file(&g_music_process);
 
   for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
-     debug("%s\r\n", g_music_content[i]);
+     debug("%s\r\n", g_music_process.music_content[i]);
   }
 
+  ff_refresh_music_file(&g_music_process);
+
+  for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
+     debug("%s\r\n", g_music_process.music_content[i]);
+  }
   g_page[0] = Createplay_view();
   g_page[1] = Createfile_view();
   WM_HideWindow(g_page[1]);

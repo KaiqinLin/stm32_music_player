@@ -3,11 +3,18 @@
 #include "string.h"
 #include "ff.h"
 
-
+TCHAR  g_path[] = "/";
 /* use to display the file list in the lcd */
 _music_file_name_t g_music_content[MAX_LIST_LEN];
 
-void ff_refresh_music_file(_music_file_name_t *);
+music_process_t g_music_process = {
+  .music_content = g_music_content,
+  .res = FR_OK,
+  .path = g_path
+};
+
+FRESULT ff_open_dir(music_process_t *s);
+void ff_refresh_music_file(music_process_t *s);
 static bool CheckSuffix(uint8_t *Str,uint8_t *Suffix,uint8_t SuffixLen);
 static bool CheckMultiSuffix(uint8_t *Str,uint8_t *SuffixStr);
 
@@ -58,30 +65,36 @@ static bool CheckMultiSuffix(uint8_t *Str, uint8_t *SuffixStr)
   
   return FALSE;
 }
-
-void ff_refresh_music_file(_music_file_name_t *s)
+FRESULT ff_open_dir(music_process_t *s)
+{
+  s->res = f_opendir(&s->direct, s->path);
+  if (s->res != FR_OK) {
+    debug("%s : Open directory failed %02x",
+          __func__, 
+          s->res);
+  }
+  return s->res;
+}
+void ff_refresh_music_file(music_process_t *s)
 {
   FRESULT res;
-  DIR dir;
   UINT i = 0;
-  TCHAR path[] = "/";
   char *file_seperate;
   static FILINFO fno;
 
-  res = f_opendir(&dir, path);                       /* Open the directory */
-  if (res == FR_OK) {
-    for (;i < MAX_LIST_LEN;) {
-      res = f_readdir(&dir, &fno);                   /* Read a directory item */
-      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-      if (fno.fattrib & AM_DIR) {                    /* It is a directory */
-      } else {                                       /* It is a file. */
-        debug("%s/%s\r\n", path, fno.fname);
-        if (CheckMultiSuffix((uint8_t *)fno.fname, (uint8_t *)".mp3|.wav") == TRUE && ((fno.fname[0] & 0x80) != 0x80)) {
-          strcpy(s[i], fno.fname);
-          i ++;
-        };
+  for (;i < MAX_LIST_LEN;) {
+    res = f_readdir(&s->direct, &fno);                   /* Read a directory item */
+    if (res != FR_OK || fno.fname[0] == 0) {
+      f_closedir(&s->direct);
+      break;                                        /* Break on error or end of dir */
+    }
+    if (fno.fattrib & AM_DIR) {                    /* It is a directory */
+    } else {                                       /* It is a file. */
+      debug("%s/%s\r\n", s->path, fno.fname);
+      if (CheckMultiSuffix((uint8_t *)fno.fname, (uint8_t *)".mp3|.wav") == TRUE && ((fno.fname[0] & 0x80) != 0x80)) {
+        strcpy(s->music_content[i], fno.fname);
+        i ++;
       }
     }
-    f_closedir(&dir);
   }
 }

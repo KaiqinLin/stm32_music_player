@@ -111,7 +111,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     
     LISTVIEW_SetFont(hItem, GUI_FONT_16_ASCII);
     for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
-        LISTVIEW_SetItemText(hItem, 0, i, g_music_content[i]);
+        LISTVIEW_SetItemText(hItem, 0, i, g_music_process.music_content[i]);
     }
     // USER END
     break;
