@@ -98,7 +98,7 @@
 
 /* function return status code */
 typedef int16_t status_t;
-
+typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 
 #endif /*__COMMON_H*/
 

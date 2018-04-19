@@ -99,7 +99,7 @@ int main(void)
 
   player_init(NULL, &play_ctx);
   sys_gui_init(NULL, &g_ui_ctx);
-  play_ctx.file_name = "0:/谭咏麟 - 一生中最爱.mp3";
+//  play_ctx.file_name = "0:/谭咏麟 - 一生中最爱.mp3";
 //  GUIDEMO_Main();
   while(1)
   {

@@ -19,6 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
+#include "file_view.h"
 // USER END
 
 #include "DIALOG.h"
@@ -89,11 +90,29 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     // Initialization of 'LIST'
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_LISTVIEW_0);
-    LISTVIEW_AddColumn(hItem, 160, "TITLE", GUI_TA_HCENTER | GUI_TA_VCENTER);
-    LISTVIEW_AddColumn(hItem, 80, "SINGER", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddColumn(hItem, 240, "FILE", GUI_TA_LEFT | GUI_TA_VCENTER);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_AddRow(hItem, NULL);
     LISTVIEW_AddRow(hItem, NULL);
     LISTVIEW_SetGridVis(hItem, 1);
     // USER START (Optionally insert additional code for further widget initialization)
+    
+    LISTVIEW_SetFont(hItem, GUI_FONT_16_ASCII);
+    for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
+        LISTVIEW_SetItemText(hItem, 0, i, g_music_content[i]);
+    }
     // USER END
     break;
   case WM_NOTIFY_PARENT:

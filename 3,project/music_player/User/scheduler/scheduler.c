@@ -162,7 +162,7 @@ void default_innerloop (sched_t *thiz, void* ctx)
   static uint16_t i = 0;
 //  watchdog_toggle();
   ctx = NULL; // supress compiler warning, will be optimized out
-  if (i >= 4) {
+  if (i >= 100) {
     debug(            "%s %d %s", 
                      heartbeat1, 
                      beats++, heartbeat2);

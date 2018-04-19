@@ -4,6 +4,7 @@
 #include "./key/key_input.h"
 #include "file_view.h"
 #include "play_view.h"
+#include "ff.h"
 
 WM_HWIN g_page[2];
 
@@ -13,11 +14,18 @@ ui_ctx_t g_ui_ctx = {
 
 void sys_gui_init(task_t *s, void *ctx)
 {
+  ff_refresh_music_file(g_music_content);
+
+  for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
+     debug("%s\r\n", g_music_content[i]);
+  }
+
   g_page[0] = Createplay_view();
   g_page[1] = Createfile_view();
   WM_HideWindow(g_page[1]);
   WM_ShowWindow(g_page[0]);
 
+  
 }
 
 
@@ -33,6 +41,10 @@ void gui_task(task_t *s, void *ctx)
        //TODO Select the object
      } else if (g_key_input_ctx.mid_flag == 1) {
        //TODO Play the object
+     } else if (g_key_input_ctx.left_flag == 1) {
+       //TODO Refresh the list
+     } else if (g_key_input_ctx.right_flag == 1) {
+       //TODO Refresh the list
      } else if (g_key_input_ctx.back_flag == 1) {
        pctx->current_win = PLAYING;
        WM_HideWindow(g_page[1]);

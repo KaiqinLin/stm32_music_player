@@ -2,7 +2,11 @@
 #define __UI_H
 #include "stm32f4xx.h"
 #include "./scheduler/scheduler.h"
+#include "file_process.h"
 
+/**
+ * @breif :Current display window
+ */
 typedef enum {
   PLAYING = 0x00,
   MENU
