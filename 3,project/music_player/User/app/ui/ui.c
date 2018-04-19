@@ -5,13 +5,19 @@
 #include "file_view.h"
 #include "play_view.h"
 
-ui_ctx_t ui_ctx = {
+WM_HWIN g_page[2];
+
+ui_ctx_t g_ui_ctx = {
    .current_win = PLAYING,
 };
 
 void sys_gui_init(task_t *s, void *ctx)
 {
-  Createplay_view();
+  g_page[0] = Createplay_view();
+  g_page[1] = Createfile_view();
+  WM_HideWindow(g_page[1]);
+  WM_ShowWindow(g_page[0]);
+
 }
 
 
@@ -28,6 +34,9 @@ void gui_task(task_t *s, void *ctx)
      } else if (g_key_input_ctx.mid_flag == 1) {
        //TODO Play the object
      } else if (g_key_input_ctx.back_flag == 1) {
+       pctx->current_win = PLAYING;
+       WM_HideWindow(g_page[1]);
+       WM_ShowWindow(g_page[0]);
        //TODO Back to the playing window
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
@@ -53,9 +62,12 @@ void gui_task(task_t *s, void *ctx)
      }
      if (g_key_input_ctx.menu_flag == 1) {
        //TODO Switch window
+       WM_HideWindow(g_page[0]);
+       WM_ShowWindow(g_page[1]);
+       pctx->current_win = MENU;
      }
   }
-
+  GUI_Exec();
   /* Reset the flag */
   g_key_input_ctx.vol_up_falg = 0;
   g_key_input_ctx.vol_down_flag = 0;

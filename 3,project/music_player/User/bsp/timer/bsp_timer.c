@@ -1,6 +1,8 @@
 #include "./timer/bsp_timer.h"
+#include "./systick/bsp_SysTick.h"
 
 
+extern __IO int32_t OS_TimeMS;
 /** TIM Interrput process func **/
 void (*TIMx_ProcessIRQSrc)(void);
 
@@ -172,6 +174,8 @@ void SCHE_TIM_IRQHandler(void)
 {
   if ( TIM_GetITStatus( SCHE_TIM, TIM_IT_Update) != RESET ) 
   {
+    /* GUI time base */
+    OS_TimeMS ++;
     TIM_ClearITPendingBit(SCHE_TIM , TIM_IT_Update);
     g_time_val ++;
     timer_tick_callback(&g_sched);

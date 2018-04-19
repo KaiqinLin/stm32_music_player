@@ -91,6 +91,9 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     // USER END
     break;
   // USER START (Optionally insert additional message handling)
+
+  case WM_PAINT:
+    break;
   // USER END
   default:
     WM_DefaultProc(pMsg);

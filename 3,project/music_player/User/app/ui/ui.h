@@ -12,8 +12,9 @@ typedef struct _ui_ctx_t {
   current_win_t  current_win;
 } ui_ctx_t;
 
-extern ui_ctx_t   ui_ctx;
+extern ui_ctx_t   g_ui_ctx;
 
+void sys_gui_init(task_t *s, void *ctx);
 void gui_task(task_t *s, void *ctx);
 
 #endif /* __UI_H*/

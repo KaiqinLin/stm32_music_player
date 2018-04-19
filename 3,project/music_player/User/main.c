@@ -38,7 +38,8 @@ task_t task_array[] =
    {player_task,       (uint8_t *)"player_task", 100, 3, 0, &play_ctx},
    {test_task,         (uint8_t *)"test_task",    10, 2, 0, NULL},
 
-   {key_input_task,    (uint8_t *)"key_task",     20, 1, 0, NULL}
+   {key_input_task,    (uint8_t *)"key_task",     20, 1, 0, &g_key_input_ctx},
+   {gui_task,          (uint8_t *)"gui_task",     50, 3, 0, &g_ui_ctx}
 };
 
 
@@ -56,7 +57,7 @@ void bsp_init(void)
   LED_GPIO_Config();
   Key_GPIO_Config();
   SysTick_Init();
-  TIMx_Configuration(&GUI_TOUCH_Exec);
+//  TIMx_Configuration(&GUI_TOUCH_Exec);
   /* Initialize th xpt2046 and ili9341 as also as the periph */
 //  LCD_Init();
   /* Enable the CRC periph to support the GUI */
@@ -97,7 +98,7 @@ int main(void)
   default_init(&g_sched, task_array, ARRAY_LEN(task_array));
 
   player_init(NULL, &play_ctx);
-  sys_gui_init(NULL, NULL);
+  sys_gui_init(NULL, &g_ui_ctx);
   play_ctx.file_name = "0:/谭咏麟 - 一生中最爱.mp3";
 //  GUIDEMO_Main();
   while(1)
@@ -105,7 +106,7 @@ int main(void)
 //    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
 //    gui_touch_test_case();
-//    main_loop(&g_sched);
+    main_loop(&g_sched);
 //    player_task(NULL, &play_ctx);
   }
 
