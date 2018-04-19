@@ -97,6 +97,7 @@ int main(void)
   default_init(&g_sched, task_array, ARRAY_LEN(task_array));
 
   player_init(NULL, &play_ctx);
+  sys_gui_init(NULL, NULL);
   play_ctx.file_name = "0:/谭咏麟 - 一生中最爱.mp3";
 //  GUIDEMO_Main();
   while(1)
@@ -105,7 +106,6 @@ int main(void)
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
 //    gui_touch_test_case();
 //    main_loop(&g_sched);
-    ui_task();
 //    player_task(NULL, &play_ctx);
   }
 

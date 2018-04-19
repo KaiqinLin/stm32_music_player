@@ -18,15 +18,6 @@ key_input_ctx_t g_key_input_ctx = {
 void key_input_task(task_t *s, void *ctx)
 {
   key_input_ctx_t *pctx = (key_input_ctx_t *)ctx;
-  pctx->vol_up_falg = 0;
-  pctx->vol_down_flag = 0;
-  pctx->back_flag = 0;
-  pctx->menu_flag = 0;
-  pctx->right_flag = 0;
-  pctx->down_flag = 0;
-  pctx->mid_flag = 0;
-  pctx->up_flag = 0;
-  pctx->left_flag = 0;
 
   if (KEY_VOLUME_UP_READ) {
     pctx->vol_up_falg = 1;

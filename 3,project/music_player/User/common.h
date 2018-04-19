@@ -2,6 +2,7 @@
 #define __COMMON_H
 #include <stdlib.h>
 #include <stdint.h>
+#include "./usart/bsp_usart.h"
 
 #define DEBUG
 #ifdef DEBUG

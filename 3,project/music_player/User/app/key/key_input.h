@@ -28,6 +28,7 @@ typedef struct _key_input_ctx_t {
   uint8_t  left_flag;
 } key_input_ctx_t;
 
+extern key_input_ctx_t g_key_input_ctx;
 
 
 void key_input_task(task_t *s, void *ctx);
