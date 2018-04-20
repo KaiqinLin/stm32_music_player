@@ -11,6 +11,7 @@ WM_HWIN g_page[2];
 
 ui_ctx_t g_ui_ctx = {
    .current_win = PLAYING,
+   .current_sel = 0
 };
 
 void sys_gui_init(task_t *s, void *ctx)
@@ -38,14 +39,18 @@ void gui_task(task_t *s, void *ctx)
   if (pctx->current_win == MENU) {
      if (g_key_input_ctx.up_flag == 1) {
        //TODO Select the object
+       /* Send key msg to the select obj(ListView) */
        GUI_SendKeyMsg(GUI_KEY_UP, 1);
      } else if (g_key_input_ctx.down_flag == 1) {
        //TODO Select the object
+       /* Send key msg to the select obj(ListView) */
        GUI_SendKeyMsg(GUI_KEY_DOWN, 1);
      } else if (g_key_input_ctx.mid_flag == 1) {
        //TODO Play the object
+       /* Get the selected row in ListView */
        pctx->current_sel = LISTVIEW_GetSel(WM_GetDialogItem(g_page[1], ID_LISTVIEW_0));
        sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
+       /* Enable the file switch flag to switch play item */
        g_play_ctx.file_sw = MUSIC_SW_EN;
        debug("%s: Selcted: %s\r\n",
              __func__,
@@ -54,10 +59,10 @@ void gui_task(task_t *s, void *ctx)
        //TODO Refresh the list
      } else if (g_key_input_ctx.right_flag == 1) {
        //TODO Refresh the list
-       ff_refresh_music_file(&g_music_process);
      } else if (g_key_input_ctx.back_flag == 1) {
        WM_MESSAGE msg;
        msg.MsgId = WM_SELECT_WINDOW;
+       /* Send user define message to the obj window to switch window */
        WM_SendMessage(WM_GetClientWindow(g_page[1]), &msg);
        pctx->current_win = PLAYING;
 //       WM_HideWindow(g_page[1]);
@@ -77,8 +82,24 @@ void gui_task(task_t *s, void *ctx)
        //TODO Fast backward
      } else if (g_key_input_ctx.left_flag == 1) {
        //TODO Select the last object and play
+       pctx->current_sel --;
+       sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
+       /* Enable the file switch flag to switch play item */
+       g_play_ctx.file_sw = MUSIC_SW_EN;
+       debug("%s: Selcted: %s\r\n",
+             __func__,
+             g_play_ctx.file_name);
+
      } else if (g_key_input_ctx.right_flag == 1) {
        //TODO Select the next object and play
+       pctx->current_sel ++;
+       sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
+       /* Enable the file switch flag to switch play item */
+       g_play_ctx.file_sw = MUSIC_SW_EN;
+       debug("%s: Selcted: %s\r\n",
+             __func__,
+             g_play_ctx.file_name);
+
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
        //TODO Set the volume up and update the window

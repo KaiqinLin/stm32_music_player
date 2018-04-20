@@ -228,6 +228,7 @@ void player_task(task_t *s, void *ctx)
       {
         debug("END\r\n");
         pctx->ucstatus = STA_IDLE;
+        I2S_Stop();
       }
       is_read_flag = 0;
     } else {
