@@ -9,7 +9,6 @@ _music_file_name_t g_music_content[MAX_LIST_LEN];
 
 music_process_t g_music_process = {
   .music_content = g_music_content,
-  .res = FR_OK,
   .path = g_path
 };
 
@@ -67,13 +66,14 @@ static bool CheckMultiSuffix(uint8_t *Str, uint8_t *SuffixStr)
 }
 FRESULT ff_open_dir(music_process_t *s)
 {
-  s->res = f_opendir(&s->direct, s->path);
-  if (s->res != FR_OK) {
+  FRESULT res;
+  res = f_opendir(&s->direct, s->path);
+  if (res != FR_OK) {
     debug("%s : Open directory failed %02x",
           __func__, 
-          s->res);
+          res);
   }
-  return s->res;
+  return res;
 }
 void ff_refresh_music_file(music_process_t *s)
 {
@@ -82,18 +82,22 @@ void ff_refresh_music_file(music_process_t *s)
   char *file_seperate;
   static FILINFO fno;
 
-  for (;i < MAX_LIST_LEN;) {
-    res = f_readdir(&s->direct, &fno);                   /* Read a directory item */
-    if (res != FR_OK || fno.fname[0] == 0) {
-      f_closedir(&s->direct);
-      break;                                        /* Break on error or end of dir */
-    }
-    if (fno.fattrib & AM_DIR) {                    /* It is a directory */
-    } else {                                       /* It is a file. */
-      debug("%s/%s\r\n", s->path, fno.fname);
-      if (CheckMultiSuffix((uint8_t *)fno.fname, (uint8_t *)".mp3|.wav") == TRUE && ((fno.fname[0] & 0x80) != 0x80)) {
-        strcpy(s->music_content[i], fno.fname);
-        i ++;
+  res = ff_open_dir(s);
+  if (res == FR_OK) {
+    for (;i < MAX_LIST_LEN;) {
+      res = f_readdir(&s->direct, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) {
+        f_closedir(&s->direct);
+        break;                                        /* Break on error or end of dir */
+      }
+      if (fno.fattrib & AM_DIR) {                    /* It is a directory */
+      } else {                                       /* It is a file. */
+        debug("%s/%s\r\n", s->path, fno.fname);
+        if (CheckMultiSuffix((uint8_t *)fno.fname, (uint8_t *)".mp3|.wav") == TRUE && ((fno.fname[0] & 0x80) != 0x80)) {
+          strcpy(s->music_content[i], fno.fname);
+          s->list_len = i;
+          i ++;
+        }
       }
     }
   }

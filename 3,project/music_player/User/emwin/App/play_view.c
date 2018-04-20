@@ -19,6 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
+#include "play_view.h"
 // USER END
 
 #include "DIALOG.h"
@@ -91,6 +92,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     // USER END
     break;
   // USER START (Optionally insert additional message handling)
+  case WM_SELECT_WINDOW:
+    
+     WM_HideWindow(pMsg->hWin);
+     WM_ShowWindow(g_page[1]);
+     WM_SetFocus(WM_GetDialogItem(g_page[1], ID_LISTVIEW_0));
+    break;
 
   case WM_PAINT:
     break;

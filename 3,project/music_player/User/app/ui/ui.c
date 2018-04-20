@@ -14,10 +14,9 @@ ui_ctx_t g_ui_ctx = {
 
 void sys_gui_init(task_t *s, void *ctx)
 {
-  ff_open_dir(&g_music_process);
   ff_refresh_music_file(&g_music_process);
 
-  for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
+  for (uint8_t i = 0; i < g_music_process.list_len; i++) {
      debug("%s\r\n", g_music_process.music_content[i]);
   }
 
@@ -38,8 +37,10 @@ void gui_task(task_t *s, void *ctx)
   if (pctx->current_win == MENU) {
      if (g_key_input_ctx.up_flag == 1) {
        //TODO Select the object
+       GUI_SendKeyMsg(GUI_KEY_UP, 1);
      } else if (g_key_input_ctx.down_flag == 1) {
        //TODO Select the object
+       GUI_SendKeyMsg(GUI_KEY_DOWN, 1);
      } else if (g_key_input_ctx.mid_flag == 1) {
        //TODO Play the object
      } else if (g_key_input_ctx.left_flag == 1) {
@@ -48,9 +49,12 @@ void gui_task(task_t *s, void *ctx)
        //TODO Refresh the list
        ff_refresh_music_file(&g_music_process);
      } else if (g_key_input_ctx.back_flag == 1) {
+       WM_MESSAGE msg;
+       msg.MsgId = WM_SELECT_WINDOW;
+       WM_SendMessage(WM_GetClientWindow(g_page[1]), &msg);
        pctx->current_win = PLAYING;
-       WM_HideWindow(g_page[1]);
-       WM_ShowWindow(g_page[0]);
+//       WM_HideWindow(g_page[1]);
+//       WM_ShowWindow(g_page[0]);
        //TODO Back to the playing window
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
@@ -76,8 +80,12 @@ void gui_task(task_t *s, void *ctx)
      }
      if (g_key_input_ctx.menu_flag == 1) {
        //TODO Switch window
-       WM_HideWindow(g_page[0]);
-       WM_ShowWindow(g_page[1]);
+//       WM_HideWindow(g_page[0]);
+//       WM_ShowWindow(g_page[1]);
+//       WM_SetFocus(g_page[1]);
+       WM_MESSAGE msg;
+       msg.MsgId = WM_SELECT_WINDOW;
+       WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        pctx->current_win = MENU;
      }
   }

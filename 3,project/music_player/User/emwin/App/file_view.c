@@ -30,8 +30,8 @@
 *
 **********************************************************************
 */
-#define ID_FRAMEWIN_0  (GUI_ID_USER + 0x00)
-#define ID_LISTVIEW_0  (GUI_ID_USER + 0x01)
+//#define ID_FRAMEWIN_0  (GUI_ID_USER + 0x00)
+//#define ID_LISTVIEW_0  (GUI_ID_USER + 0x01)
 
 
 // USER START (Optionally insert additional defines)
@@ -53,7 +53,7 @@
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { FRAMEWIN_CreateIndirect, "file_view", ID_FRAMEWIN_0, 0, 0, 320, 240, 0, 0x0, 0 },
-  { LISTVIEW_CreateIndirect, "LIST", ID_LISTVIEW_0, 0, 0, 240, 240, 0, 0x0, 0 },
+  { LISTVIEW_CreateIndirect, "LIST", ID_LISTVIEW_0, 0, 0, 255, 240, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -77,6 +77,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   int     NCode;
   int     Id;
   // USER START (Optionally insert additional variables)
+  SCROLLBAR_Handle hWin;
   // USER END
 
   switch (pMsg->MsgId) {
@@ -91,26 +92,17 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_LISTVIEW_0);
     LISTVIEW_AddColumn(hItem, 240, "FILE", GUI_TA_LEFT | GUI_TA_VCENTER);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
-    LISTVIEW_AddRow(hItem, NULL);
     LISTVIEW_SetGridVis(hItem, 1);
     // USER START (Optionally insert additional code for further widget initialization)
+    SCROLLBAR_CreateAttached(hItem, SCROLLBAR_CF_VERTICAL);//创建1个垂直滚动条
+
+    hWin = WM_GetScrollbarV(hItem);
+
+    SCROLLBAR_SetWidth(hWin, 15);
     
     LISTVIEW_SetFont(hItem, GUI_FONT_16_ASCII);
-    for (uint8_t i = 0; i < MAX_LIST_LEN; i++) {
+    for (uint8_t i = 0; i < g_music_process.list_len; i++) {
+        LISTVIEW_AddRow(hItem, NULL);
         LISTVIEW_SetItemText(hItem, 0, i, g_music_process.music_content[i]);
     }
     // USER END
@@ -142,6 +134,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     }
     break;
   // USER START (Optionally insert additional message handling)
+  case WM_SELECT_WINDOW:
+    
+     WM_HideWindow(pMsg->hWin);
+     WM_ShowWindow(g_page[0]);
+     WM_SetFocus(g_page[0]);
+    break;
+  case WM_KEY:
+    
+    break;
   // USER END
   default:
     WM_DefaultProc(pMsg);
