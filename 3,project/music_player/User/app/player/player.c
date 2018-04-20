@@ -15,12 +15,12 @@
  */
 
 
-player_ctx_t    play_ctx =
+player_ctx_t    g_play_ctx =
 {
   .ucvolume = 20,
   .ucstatus = STA_IDLE,
   .ucfreq   = I2S_AudioFreq_Default,
-  .file_sw  = 0
+  .file_sw  = MUSIC_SW_DIS
 };
 static HMP3Decoder     Mp3Decoder;      /* mp3解码器指针  */
 static MP3FrameInfo    Mp3FrameInfo;    /* mP3帧信息  */
@@ -81,7 +81,7 @@ void player_task(task_t *s, void *ctx)
   static int  bytes_left = 0;          /* 剩余字节数 */  
 //  read_ptr = pctx->input_buf->_base;
 
-  if (pctx->file_sw == 0x01) {
+  if (pctx->file_sw == MUSIC_SW_EN) {
     f_close(&file);
     MP3FreeDecoder(Mp3Decoder);
 
@@ -118,6 +118,7 @@ void player_task(task_t *s, void *ctx)
 
   if (pctx->ucstatus == STA_PLAYING)
   {
+    pctx->file_sw = MUSIC_SW_DIS;
     if (is_read_flag == 1) {
       //寻找帧同步，返回第一个同步字的位置
       read_offset = MP3FindSyncWord(read_ptr, bytes_left);

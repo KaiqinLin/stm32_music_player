@@ -1,4 +1,5 @@
 #include "./ui/ui.h"
+#include "./player/player.h"
 #include "GUI.h"
 #include "common.h"
 #include "./key/key_input.h"
@@ -43,6 +44,12 @@ void gui_task(task_t *s, void *ctx)
        GUI_SendKeyMsg(GUI_KEY_DOWN, 1);
      } else if (g_key_input_ctx.mid_flag == 1) {
        //TODO Play the object
+       pctx->current_sel = LISTVIEW_GetSel(WM_GetDialogItem(g_page[1], ID_LISTVIEW_0));
+       sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
+       g_play_ctx.file_sw = MUSIC_SW_EN;
+       debug("%s: Selcted: %s\r\n",
+             __func__,
+             g_play_ctx.file_name);
      } else if (g_key_input_ctx.left_flag == 1) {
        //TODO Refresh the list
      } else if (g_key_input_ctx.right_flag == 1) {

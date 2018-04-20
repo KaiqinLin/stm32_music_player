@@ -14,6 +14,7 @@ typedef enum {
 
 typedef struct _ui_ctx_t {
   current_win_t  current_win;
+  uint16_t       current_sel;
 } ui_ctx_t;
 
 extern ui_ctx_t   g_ui_ctx;

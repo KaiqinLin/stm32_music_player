@@ -35,7 +35,7 @@ void test_task(task_t *s, void *ctx)
 /**************** Task array        ******************/
 task_t task_array[] = 
 {
-   {player_task,       (uint8_t *)"player_task", 100, 3, 0, &play_ctx},
+   {player_task,       (uint8_t *)"player_task", 100, 3, 0, &g_play_ctx},
    {test_task,         (uint8_t *)"test_task",    10, 2, 0, NULL},
 
    {key_input_task,    (uint8_t *)"key_task",      5, 1, 0, &g_key_input_ctx},
@@ -97,7 +97,7 @@ int main(void)
 
   default_init(&g_sched, task_array, ARRAY_LEN(task_array));
 
-  player_init(NULL, &play_ctx);
+  player_init(NULL, &g_play_ctx);
   sys_gui_init(NULL, &g_ui_ctx);
 //  play_ctx.file_name = "0:/谭咏麟 - 一生中最爱.mp3";
 //  GUIDEMO_Main();

@@ -11,11 +11,13 @@
 #define MP3BUFFER_SIZE  2304
 #define INPUTBUF_SIZE   2000
 
+#define MUSIC_SW_EN     0x01
+#define MUSIC_SW_DIS    0x00
 
 typedef  short  srt_buf_array[MP3BUFFER_SIZE];
 
 typedef struct _player_ctx_t {
-  uint8_t       *file_name;            /*<! the selected mp3 file name >*/
+  uint8_t        file_name[60];            /*<! the selected mp3 file name >*/
   uint8_t        ucvolume;             /*<! setting volume >*/
   uint8_t        ucstatus;             /*<! playing status >*/
   uint32_t       ucfreq;
@@ -24,7 +26,7 @@ typedef struct _player_ctx_t {
   srt_buf_array *output_buf;           /*<! pointer to the buffer decoded output >*/
 } player_ctx_t;
 
-extern player_ctx_t    play_ctx;
+extern player_ctx_t    g_play_ctx;
 /* ״̬ */
 enum
 {
