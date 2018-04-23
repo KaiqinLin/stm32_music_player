@@ -3,6 +3,9 @@
 #include "./timer/bsp_timer.h"
 #include "common.h"
 #include "stdio.h"
+#include "./player/player.h"
+
+
 
 
 /*
@@ -119,14 +122,12 @@ void default_run (sched_t *thiz, uint32_t time_available)
         task_time_taken = now - task_time_started;
 
         if (task_time_taken > task_time_allowed) {
-//          sdebug(DEBUG_FD, 
-//                 W,
-//                 "[W] %s: task %s overran! \r\n\
-//                 %u allowed but %u actually consumed.\r\n",
-//                 __func__,
-//                 cur_task->_name,
-//                 task_time_allowed,
-//                 task_time_taken);
+           debug("[W] %s: task %s overran! \r\n\
+                 %u allowed but %u actually consumed.\r\n",
+                 __func__,
+                 cur_task->_name,
+                 task_time_allowed,
+                 task_time_taken);
         }
         if (task_time_taken >= time_available) {
           thiz->_run_flag = 1;
@@ -149,7 +150,7 @@ uint32_t sched_get_micros (sched_t* thiz)
 
 uint32_t default_get_micros (void)
 {
-  return micros();
+  return millis();
 }
 
 /**
@@ -161,6 +162,7 @@ void default_innerloop (sched_t *thiz, void* ctx)
 {
   static uint16_t i = 0;
 //  watchdog_toggle();
+  player_task(NULL, &g_play_ctx);
   ctx = NULL; // supress compiler warning, will be optimized out
   if (i >= 100) {
     debug(            "%s %d %s", 

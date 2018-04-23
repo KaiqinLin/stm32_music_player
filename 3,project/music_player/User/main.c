@@ -26,20 +26,13 @@
 /**************** Global varialbles ******************/
 FATFS fs;
 
-void test_task(task_t *s, void *ctx)
-{
-  static uint32_t i = 0;
-  GUI_GotoXY(10, 60);
-  GUI_DispDec(i++, 4);
-}
 /**************** Task array        ******************/
 task_t task_array[] = 
 {
-   {player_task,       (uint8_t *)"player_task", 100, 3, 0, &g_play_ctx},
-   {test_task,         (uint8_t *)"test_task",    10, 2, 0, NULL},
+//   {player_task,       (uint8_t *)"player_task", 70, 9, 0, &g_play_ctx},
 
    {key_input_task,    (uint8_t *)"key_task",      5, 1, 0, &g_key_input_ctx},
-   {gui_task,          (uint8_t *)"gui_task",     50, 3, 0, &g_ui_ctx}
+   {gui_task,          (uint8_t *)"gui_task",     20, 5, 0, &g_ui_ctx}
 };
 
 
