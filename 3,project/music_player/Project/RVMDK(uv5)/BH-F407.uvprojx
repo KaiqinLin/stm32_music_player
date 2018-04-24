@@ -842,6 +842,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\app\key\key_input.c</FilePath>
             </File>
+            <File>
+              <FileName>wavplay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\player\wavplay.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
