@@ -4,7 +4,7 @@
 #include "ff.h"
 
 #define  MAX_LIST_LEN         50
-#define  MAX_FILE_NAME_LEN    50
+#define  MAX_FILE_NAME_LEN    40
 
 typedef char _music_file_name_t[MAX_FILE_NAME_LEN];
 

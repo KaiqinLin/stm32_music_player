@@ -27,7 +27,7 @@ static MP3FrameInfo    Mp3FrameInfo;    /* mP3帧信息  */
 static __IO uint8_t bufflag = 0;             /* 数据缓存区选择标志 */
 static __IO uint8_t is_read_flag = 0;        /*<! DMA transfer complete flag>*/
 
-short outbuf[2][MP3BUFFER_SIZE];  /* 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
+short outbuf[2][AUDIO_BUFFER_SIZE];  /* 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
 
 FIL file;                      /* file objects */
 FRESULT result; 
