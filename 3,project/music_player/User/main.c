@@ -19,6 +19,7 @@
 #include "./player/player.h"
 #include "./key/key_input.h"
 #include "./ui/ui.h"
+#include "./player/wavplay.h"
 
 /**************** Private marco    *******************/
 
@@ -99,8 +100,9 @@ int main(void)
 //    lcd_test_case();
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
 //    gui_touch_test_case();
-    main_loop(&g_sched);
+//    main_loop(&g_sched);
 //    player_task(NULL, &play_ctx);
+      wav_play_song("0:/xihuanni.wav");
   }
 
 }
