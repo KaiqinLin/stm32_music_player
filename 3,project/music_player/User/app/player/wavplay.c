@@ -4,8 +4,8 @@
 __wavctrl wavctrl;        //WAV控制结构体
 vu8 wavtransferend=0;    //i2s传输完成标志
 vu8 wavwitchbuf=0;        //i2sbufx指示标志
-uint8_t tbuf[AUDIO_BUFFER_SIZE];
-
+//uint8_t tbuf[AUDIO_BUFFER_SIZE];
+FIL ftemp;
 __audiodev audiodev;
 
 const u16 I2S_PSC_TBL[][5]=
@@ -54,7 +54,6 @@ u8 I2S2_SampleRate_Set(u32 samplerate)
 //返回值:0,成功;1,打开文件失败;2,非WAV文件;3,DATA区域未找到.
 u8 wav_decode_init(u8* fname,__wavctrl* wavx)
 {
-    FIL ftemp;
     u8  buf[512]; 
     u32 br=0;
     u8  res=0;
@@ -194,7 +193,7 @@ u8 wav_play_song(u8* fname)
     audiodev.file = &ftemp;
     audiodev.i2sbuf1=(uint8_t *)outbuf[0];
     audiodev.i2sbuf2=(uint8_t *)outbuf[1];
-    audiodev.tbuf = tbuf;
+//    audiodev.tbuf = tbuf;
     if(audiodev.file&&audiodev.i2sbuf1&&audiodev.i2sbuf2&&audiodev.tbuf)
     { 
         res=wav_decode_init(fname,&wavctrl);//得到文件的信息

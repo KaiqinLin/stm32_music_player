@@ -1,8 +1,10 @@
-#ifndef  __WAVPLAY_H
-#define  __WAVPLAY_H
+#ifndef __MUSIC_PLAYER_H
+#define __MUSIC_PLAYER_H
 #include "stm32f4xx.h"
 #include "./wm8978/bsp_wm8978.h"
 #include "ff.h"
+#include "./player/player.h"
+//#include "./player/wavplay.h"
 
 //RIFF块
 typedef struct
@@ -87,12 +89,7 @@ typedef __packed struct
                             //bit1:0,结束播放;1,开启播放 
 }__audiodev;
 
+void music_player_init(task_t *s, void *ctx);
+void music_player_task(task_t *s, void *ctx);
 
-uint8_t wav_decode_init(uint8_t* fname,__wavctrl* wavx);
-uint32_t wav_buffill(uint8_t *buf,uint16_t size,uint8_t bits);
-void wav_i2s_dma_tx_callback(void); 
-u8 I2S2_SampleRate_Set(u32 samplerate);
-uint8_t wav_play_song(uint8_t* fname);
-
-#endif /* __WAVPLAY_H */
-
+#endif /* __MUSIC_PLAYER_H */

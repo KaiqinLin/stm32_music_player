@@ -18,7 +18,7 @@
 player_ctx_t    g_play_ctx =
 {
   .ucvolume = 20,
-  .ucstatus = STA_IDLE,
+  .ucstatus = STA_SW,
   .ucfreq   = I2S_AudioFreq_Default,
   .file_sw  = MUSIC_SW_DIS
 };
