@@ -51,7 +51,12 @@ void gui_task(task_t *s, void *ctx)
        pctx->current_sel = LISTVIEW_GetSel(WM_GetDialogItem(g_page[1], ID_LISTVIEW_0));
        sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
        /* Enable the file switch flag to switch play item */
-       g_play_ctx.file_sw = MUSIC_SW_EN;
+       if (CheckSuffix((uint8_t *)g_play_ctx.file_name, (uint8_t *)".mp3", 4) == TRUE) {
+         g_play_ctx.audio_file_type = MP3_FILE;
+       } else {
+         g_play_ctx.audio_file_type = WAV_FILE;
+       }
+       g_play_ctx.ucstatus = STA_SW;
        debug("%s: Selcted: %s\r\n",
              __func__,
              g_play_ctx.file_name);
@@ -85,7 +90,12 @@ void gui_task(task_t *s, void *ctx)
        pctx->current_sel --;
        sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
        /* Enable the file switch flag to switch play item */
-       g_play_ctx.file_sw = MUSIC_SW_EN;
+       if (CheckSuffix((uint8_t *)g_play_ctx.file_name, (uint8_t *)".mp3", 4) == TRUE) {
+         g_play_ctx.audio_file_type = MP3_FILE;
+       } else {
+         g_play_ctx.audio_file_type = WAV_FILE;
+       }
+       g_play_ctx.ucstatus = STA_SW;
        debug("%s: Selcted: %s\r\n",
              __func__,
              g_play_ctx.file_name);
@@ -95,7 +105,12 @@ void gui_task(task_t *s, void *ctx)
        pctx->current_sel ++;
        sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
        /* Enable the file switch flag to switch play item */
-       g_play_ctx.file_sw = MUSIC_SW_EN;
+       if (CheckSuffix((uint8_t *)g_play_ctx.file_name, (uint8_t *)".mp3", 4) == TRUE) {
+         g_play_ctx.audio_file_type = MP3_FILE;
+       } else {
+         g_play_ctx.audio_file_type = WAV_FILE;
+       }
+       g_play_ctx.ucstatus = STA_SW;
        debug("%s: Selcted: %s\r\n",
              __func__,
              g_play_ctx.file_name);

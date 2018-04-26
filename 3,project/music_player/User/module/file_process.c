@@ -1,5 +1,4 @@
 #include "file_process.h"
-#include "common.h"
 #include "string.h"
 #include "ff.h"
 
@@ -14,14 +13,14 @@ music_process_t g_music_process = {
 
 FRESULT ff_open_dir(music_process_t *s);
 void ff_refresh_music_file(music_process_t *s);
-static bool CheckSuffix(uint8_t *Str,uint8_t *Suffix,uint8_t SuffixLen);
-static bool CheckMultiSuffix(uint8_t *Str,uint8_t *SuffixStr);
+bool CheckSuffix(uint8_t *Str,uint8_t *Suffix,uint8_t SuffixLen);
+bool CheckMultiSuffix(uint8_t *Str,uint8_t *SuffixStr);
 
 
 /**
  * @brief :Find the single file suffix
  */
-static bool CheckSuffix(uint8_t *Str, uint8_t *Suffix, uint8_t SuffixLen)
+bool CheckSuffix(uint8_t *Str, uint8_t *Suffix, uint8_t SuffixLen)
 {
   uint8_t Len;
   uint8_t i;
@@ -41,7 +40,7 @@ static bool CheckSuffix(uint8_t *Str, uint8_t *Suffix, uint8_t SuffixLen)
 /**
  * @brief :Find the multiple file suffix
  */
-static bool CheckMultiSuffix(uint8_t *Str, uint8_t *SuffixStr)
+bool CheckMultiSuffix(uint8_t *Str, uint8_t *SuffixStr)
 {
   uint8_t i, j, SuffixStrLen;
 

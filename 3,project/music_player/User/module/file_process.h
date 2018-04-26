@@ -1,6 +1,7 @@
 #ifndef __FILE_PROCESS_H
 #define __FILE_PROCESS_H
 #include "stm32f4xx.h"
+#include "common.h"
 #include "ff.h"
 
 #define  MAX_LIST_LEN         50
@@ -19,6 +20,8 @@ extern music_process_t g_music_process;
 
 FRESULT ff_open_dir(music_process_t *s);
 void ff_refresh_music_file(music_process_t *s);
+bool CheckSuffix(uint8_t *Str,uint8_t *Suffix,uint8_t SuffixLen);
+bool CheckMultiSuffix(uint8_t *Str,uint8_t *SuffixStr);
 
 
 #endif /* __FILE_PROCESS_H*/
