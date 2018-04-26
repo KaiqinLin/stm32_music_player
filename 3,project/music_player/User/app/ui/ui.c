@@ -87,7 +87,11 @@ void gui_task(task_t *s, void *ctx)
        //TODO Fast backward
      } else if (g_key_input_ctx.left_flag == 1) {
        //TODO Select the last object and play
-       pctx->current_sel --;
+       if (pctx->current_sel != 0) {
+         pctx->current_sel --;
+       } else {
+         pctx->current_sel = g_music_process.list_len;
+       }
        sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
        /* Enable the file switch flag to switch play item */
        if (CheckSuffix((uint8_t *)g_play_ctx.file_name, (uint8_t *)".mp3", 4) == TRUE) {
@@ -102,7 +106,11 @@ void gui_task(task_t *s, void *ctx)
 
      } else if (g_key_input_ctx.right_flag == 1) {
        //TODO Select the next object and play
-       pctx->current_sel ++;
+       if (pctx->current_sel == g_music_process.list_len) {
+         pctx->current_sel = 0;
+       } else {
+         pctx->current_sel ++;
+       }
        sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[pctx->current_sel]);
        /* Enable the file switch flag to switch play item */
        if (CheckSuffix((uint8_t *)g_play_ctx.file_name, (uint8_t *)".mp3", 4) == TRUE) {

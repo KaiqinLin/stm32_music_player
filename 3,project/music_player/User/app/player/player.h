@@ -6,6 +6,8 @@
 #include "./malloc/malloc.h"
 #include "ff.h"
 #include "mp3dec.h"
+#include "file_process.h"
+#include "./ui/ui.h"
 
 /* 处理立体声音频数据时，输出缓冲区需要的最大大小为2304*16/8字节(16为PCM数据为16位)，
  * 这里我们定义MP3BUFFER_SIZE为2304，实际输出缓冲区为MP3BUFFER_SIZE*2个字节
@@ -124,6 +126,7 @@ enum
   STA_PLAYING,  /* 放音状态 */
   STA_SW,
   STA_PAUSE,
+  STA_NEXT,
   STA_ERR,      /*  error  */
 };
 

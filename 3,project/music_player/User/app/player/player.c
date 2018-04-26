@@ -13,7 +13,7 @@
 player_ctx_t    g_play_ctx =
 {
   .ucvolume = 20,
-  .ucstatus = STA_SW,
+  .ucstatus = STA_IDLE,
   .ucfreq   = I2S_AudioFreq_Default,
   .file_sw  = MUSIC_SW_DIS
 };
@@ -217,6 +217,7 @@ void player_task(task_t *s, void *ctx)
   if (pctx->ucstatus == STA_SW) {
   /* Open a new music file */
     f_close(pctx->file);
+    I2S_Stop();
     if (pctx->audio_file_type == WAV_FILE) {
     /* file type is wav */
       res = wav_decode_init(pctx->file_name, &wav_ctrl);
@@ -270,9 +271,11 @@ void player_task(task_t *s, void *ctx)
         return;
       }
 
+      I2Sx_Mode_Config(I2S_Standard_Phillips, I2S_DataFormat_16b, pctx->ucfreq);
       read_ptr = pctx->input_buf->_base;
       bytes_left=bw;
       pctx->transferedflag = 1;
+      pctx->ucfreq = I2S_AudioFreq_Default;
     }
     pctx->ucstatus = STA_PLAYING;
 
@@ -287,6 +290,8 @@ void player_task(task_t *s, void *ctx)
           f_close(pctx->file);
           pctx->ucstatus = STA_IDLE;
           I2S_Stop();
+
+          pctx->ucstatus = STA_NEXT;
         }
         if (pctx->bufferflag) {
           fillnum = buffill((uint8_t *)pctx->output_buf[1], AUDIO_BUFFER_SIZE, wav_ctrl.bps);//填充buf2
@@ -405,9 +410,25 @@ void player_task(task_t *s, void *ctx)
           f_close(pctx->file);
           pctx->ucstatus = STA_IDLE;
           I2S_Stop();
+
+          pctx->ucstatus = STA_NEXT;
         }
       }
     }
+  } else if (pctx->ucstatus == STA_NEXT) {
+    if (g_ui_ctx.current_sel == g_music_process.list_len) {
+      g_ui_ctx.current_sel = 0;
+    } else {
+      g_ui_ctx.current_sel ++;
+    }
+    sprintf((char *)pctx->file_name,"0:/%s",g_music_process.music_content[g_ui_ctx.current_sel]);
+    /* Enable the file switch flag to switch play item */
+    if (CheckSuffix((uint8_t *)g_play_ctx.file_name, (uint8_t *)".mp3", 4) == TRUE) {
+      pctx->audio_file_type = MP3_FILE;
+    } else {
+      pctx->audio_file_type = WAV_FILE;
+    }
+    pctx->ucstatus = STA_SW;
   }
 }
 /* DMA发送完成中断回调函数 */
