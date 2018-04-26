@@ -40,6 +40,7 @@
 #define ID_TEXT_4      (GUI_ID_USER + 0x07)
 #define ID_TEXT_5      (GUI_ID_USER + 0x08)
 #define ID_TEXT_6      (GUI_ID_USER + 0x09)
+#define ID_TEXT_7      (GUI_ID_USER + 0x0A)
 
 
 // USER START (Optionally insert additional defines)
@@ -63,13 +64,14 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { FRAMEWIN_CreateIndirect, "play_view", ID_FRAMEWIN_0, 0, 0, 320, 240, 0, 0x0, 0 },
   { PROGBAR_CreateIndirect, "PLAYING", ID_PROGBAR_0, 70, 190, 180, 10, 0, 0x0, 0 },
   { PROGBAR_CreateIndirect, "VOLUME", ID_PROGBAR_1, 20, 50, 8, 90, 1, 0x0, 0 },
-  { TEXT_CreateIndirect, "TITLE", ID_TEXT_0, 85, 20, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "TITLE", ID_TEXT_0, 85, 45, 150, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "VOL", ID_TEXT_1, 9, 150, 30, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "bitrate", ID_TEXT_2, 85, 90, 150, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "samprate", ID_TEXT_3, 85, 60, 150, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "channel", ID_TEXT_4, 85, 120, 150, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "time", ID_TEXT_5, 260, 185, 30, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "cur", ID_TEXT_6, 30, 185, 30, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "BITRATE", ID_TEXT_2, 85, 115, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "SAMPLERATE", ID_TEXT_3, 85, 85, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "CHANNELS", ID_TEXT_4, 85, 145, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "ALLSEC", ID_TEXT_5, 250, 185, 40, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "CURSEC", ID_TEXT_6, 30, 185, 40, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "DATE", ID_TEXT_7, 0, 0, 200, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -100,6 +102,16 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     //
     hItem = pMsg->hWin;
     FRAMEWIN_SetTitleVis(hItem, 0);
+    //
+    // Initialization of 'time'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
+    TEXT_SetTextAlign(hItem, GUI_TA_HCENTER | GUI_TA_VCENTER);
+    //
+    // Initialization of 'cur'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
+    TEXT_SetTextAlign(hItem, GUI_TA_HCENTER | GUI_TA_VCENTER);
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END
     break;
@@ -112,6 +124,22 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     break;
 
   case WM_PAINT:
+    break;
+  case WM_REFRESH_PLAY_TIME:
+
+    break;
+  case WM_REFRESH_PLAY_INFO:
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
+    TEXT_SetText(hItem, (char *)g_ui_ctx.audio_info.filename);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.bitratebuf);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.sampratebuf);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.channelbuf);
     break;
   // USER END
   default:

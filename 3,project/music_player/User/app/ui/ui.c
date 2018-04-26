@@ -13,7 +13,7 @@ ui_ctx_t g_ui_ctx = {
    .current_win = PLAYING,
    .current_sel = 0
 };
-
+audio_info_buffer_t audio_info_buffer;
 void sys_gui_init(task_t *s, void *ctx)
 {
   ff_refresh_music_file(&g_music_process);
@@ -35,6 +35,7 @@ void gui_task(task_t *s, void *ctx)
 {
   ui_ctx_t *pctx = (ui_ctx_t*) ctx;
   _RETURN_IF_FAIL(pctx);
+  static uint32_t  timecnt = 0, last_timecnt = 0;
 
   if (pctx->current_win == MENU) {
      if (g_key_input_ctx.up_flag == 1) {
@@ -145,7 +146,31 @@ void gui_task(task_t *s, void *ctx)
        WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        pctx->current_win = MENU;
      }
+    timecnt = sched_get_micros(&g_sched);
+    if (timecnt - last_timecnt >= 500) {
+      last_timecnt = timecnt;
+      /* Send refresh the player view msg */
+      //TODO refresh the pro bar
+      WM_MESSAGE msg;
+      sprintf((char *)audio_info_buffer.cursecbuf, "%d:%2d", pctx->audio_info.cur_sec / 60, pctx->audio_info.cur_sec % 60);
+      sprintf((char *)audio_info_buffer.allsecbuf, "%d:%2d", pctx->audio_info.all_sec / 60, pctx->audio_info.all_sec % 60);
+      msg.MsgId = WM_REFRESH_PLAY_TIME;
+      WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
+
+    } else {
+
+    }
   }
+
+  if (pctx->info_upd_flag == 1) {
+    WM_MESSAGE msg;
+    sprintf((char *)audio_info_buffer.bitratebuf, "BITRATE: %d Bps", pctx->audio_info.bitrate);
+    sprintf((char *)audio_info_buffer.sampratebuf, "SAMPLERATE: %.1f kHz", pctx->audio_info.samprate / 1000.f);
+    sprintf((char *)audio_info_buffer.channelbuf, "CHANNELS: %d ", pctx->audio_info.channels);
+    msg.MsgId = WM_REFRESH_PLAY_INFO;
+    WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
+  }
+
   GUI_Exec();
   /* Reset the flag */
   g_key_input_ctx.vol_up_falg = 0;

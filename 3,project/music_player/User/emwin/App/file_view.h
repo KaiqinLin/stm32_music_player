@@ -8,6 +8,8 @@
 #define ID_LISTVIEW_0  (GUI_ID_USER + 0x01)
 
 #define  WM_SELECT_WINDOW            (WM_USER + 0x00)
+#define  WM_REFRESH_PLAY_TIME        (WM_USER + 0x01)
+#define  WM_REFRESH_PLAY_INFO        (WM_USER + 0x02)
 
 extern WM_HWIN g_page[2];
 

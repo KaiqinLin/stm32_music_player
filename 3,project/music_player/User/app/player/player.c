@@ -220,23 +220,30 @@ void player_task(task_t *s, void *ctx)
     I2S_Stop();
     if (pctx->audio_file_type == WAV_FILE) {
     /* file type is wav */
-      res = wav_decode_init(pctx->file_name, &wav_ctrl);
+      res = wav_decode_init(pctx->file_name, pctx->wavctrl);
+      /* set file decode info */
+      g_ui_ctx.audio_info.bitrate  = pctx->wavctrl->bitrate / 1000;
+      g_ui_ctx.audio_info.samprate = pctx->wavctrl->samplerate;
+      g_ui_ctx.audio_info.channels = pctx->wavctrl->nchannels;
+      g_ui_ctx.info_upd_flag = 1;
+      g_ui_ctx.audio_info.filename = pctx->file_name;
+
       if (res == 0) {
-        if (wav_ctrl.bps == 16) {
+        if (pctx->wavctrl->bps == 16) {
           wm8978_CfgAudioIF(I2S_Standard_Phillips, 16);
           I2Sx_Mode_Config(I2S_Standard_Phillips, I2S_DataFormat_16bextended, I2S_AudioFreq_Default);
-        } else if (wav_ctrl.bps == 24) {
+        } else if (pctx->wavctrl->bps == 24) {
           wm8978_CfgAudioIF(I2S_Standard_Phillips, 24);
           I2Sx_Mode_Config(I2S_Standard_Phillips, I2S_DataFormat_24b, I2S_AudioFreq_Default);        //飞利浦标准,主机发送,时钟低电平有效,24位扩展帧长度
         }
-        I2S2_SampleRate_Set(wav_ctrl.samplerate);             //设置采样率
+        I2S2_SampleRate_Set(pctx->wavctrl->samplerate);             //设置采样率
         I2Sx_TX_DMA_Init((uint16_t *)pctx->output_buf[0], (uint16_t *)pctx->output_buf[1],AUDIO_BUFFER_SIZE/2); //配置TX DMA
         I2S_Stop();
         res = f_open(pctx->file, (TCHAR *)pctx->file_name, FA_READ);    //打开文件
         if (res == 0) {
-          f_lseek(pctx->file, wav_ctrl.datastart);             //跳过文件头
-          fillnum = buffill((uint8_t *)pctx->output_buf[0], AUDIO_BUFFER_SIZE, wav_ctrl.bps);
-          fillnum = buffill((uint8_t *)pctx->output_buf[1], AUDIO_BUFFER_SIZE, wav_ctrl.bps);
+          f_lseek(pctx->file, pctx->wavctrl->datastart);             //跳过文件头
+          fillnum = buffill((uint8_t *)pctx->output_buf[0], AUDIO_BUFFER_SIZE, pctx->wavctrl->bps);
+          fillnum = buffill((uint8_t *)pctx->output_buf[1], AUDIO_BUFFER_SIZE, pctx->wavctrl->bps);
           I2S_Play_Start();
         }
       }
@@ -294,9 +301,9 @@ void player_task(task_t *s, void *ctx)
           pctx->ucstatus = STA_NEXT;
         }
         if (pctx->bufferflag) {
-          fillnum = buffill((uint8_t *)pctx->output_buf[1], AUDIO_BUFFER_SIZE, wav_ctrl.bps);//填充buf2
+          fillnum = buffill((uint8_t *)pctx->output_buf[1], AUDIO_BUFFER_SIZE, pctx->wavctrl->bps);//填充buf2
         } else {
-          fillnum = buffill((uint8_t *)pctx->output_buf[0], AUDIO_BUFFER_SIZE, wav_ctrl.bps);//填充buf1
+          fillnum = buffill((uint8_t *)pctx->output_buf[0], AUDIO_BUFFER_SIZE, pctx->wavctrl->bps);//填充buf1
         }
         I2S_Play_Start();
       } else if (pctx->audio_file_type == MP3_FILE) {
@@ -394,6 +401,14 @@ void player_task(task_t *s, void *ctx)
             debug(" \r\n Version       %d", pctx->mp3frameinfo->version);
             debug(" \r\n OutputSamps   %d", pctx->mp3frameinfo->outputSamps);
             debug("\r\n");
+
+            /* set file decode info */
+            g_ui_ctx.audio_info.bitrate  = pctx->mp3frameinfo->bitrate / 1000;
+            g_ui_ctx.audio_info.samprate = pctx->mp3frameinfo->samprate;
+            g_ui_ctx.audio_info.channels = pctx->mp3frameinfo->nChans;
+            g_ui_ctx.audio_info.filename = pctx->file_name;
+            g_ui_ctx.info_upd_flag = 1;
+
             //I2S_AudioFreq_Default = 2，正常的帧，每次都要改速率
             if (pctx->ucfreq >= I2S_AudioFreq_Default)  
             {
