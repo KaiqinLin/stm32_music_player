@@ -20,7 +20,7 @@
 #include "./key/key_input.h"
 #include "./ui/ui.h"
 //#include "./player/wavplay.h"
-#include "./player/music_player.h"
+//#include "./player/music_player.h"
 
 /**************** Private marco    *******************/
 
@@ -94,8 +94,9 @@ int main(void)
 
   player_init(NULL, &g_play_ctx);
   sys_gui_init(NULL, &g_ui_ctx);
-  music_player_init(NULL, &g_play_ctx);
-  memcpy(g_play_ctx.file_name, "0:/xihuanni.wav", 20);
+//  music_player_init(NULL, &g_play_ctx);
+  memcpy(g_play_ctx.file_name, "0:/xihuanni.wav", 60);
+  g_play_ctx.audio_file_type = WAV_FILE;
 //  GUIDEMO_Main();
   while(1)
   {
@@ -103,8 +104,8 @@ int main(void)
 //    mp3PlayerDemo("0:/谭咏麟 - 一生中最爱.mp3");
 //    gui_touch_test_case();
 //    main_loop(&g_sched);
-//    player_task(NULL, &play_ctx);
-      music_player_task(NULL, &g_play_ctx);
+    player_task(NULL, &g_play_ctx);
+//      music_player_task(NULL, &g_play_ctx);
   }
 
 }
