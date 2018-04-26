@@ -34,7 +34,7 @@ task_t task_array[] =
 //   {player_task,       (uint8_t *)"player_task", 70, 9, 0, &g_play_ctx},
 
    {key_input_task,    (uint8_t *)"key_task",      5, 1, 0, &g_key_input_ctx},
-   {gui_task,          (uint8_t *)"gui_task",     20, 5, 0, &g_ui_ctx}
+   {gui_task,          (uint8_t *)"gui_task",      5, 5, 0, &g_ui_ctx}
 };
 
 

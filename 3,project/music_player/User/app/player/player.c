@@ -68,12 +68,20 @@ uint8_t I2S2_SampleRate_Set(uint32_t samplerate)
     SPI3->I2SPR = tempreg;            //设置I2SPR寄存器 
     return 0;
 }
+
 void wav_get_curtime(FIL*fx, __wavctrl *wavx)
 {
     long long fpos;      
     wavx->totsec = wavx->datasize/(wavx->bitrate/8);    //歌曲总长度(单位:秒) 
     fpos = fx->fptr-wavx->datastart;                     //得到当前文件播放到的地方 
     wavx->cursec = fpos*wavx->totsec/wavx->datasize;    //当前播放到第多少秒了?    
+}
+void mp3_get_curtime(FIL *fx, MP3FrameInfo *mp3frminfo, audio_info_t *audioinfo)
+{
+    long long fpos;
+    audioinfo->all_sec = fx->obj.objsize / (mp3frminfo->bitrate / 8);
+    fpos = fx->fptr;
+    audioinfo->cur_sec = fpos * audioinfo->all_sec / fx->obj.objsize;
 }
 
 /* 仅允许本文件内调用的函数声明 */
@@ -227,6 +235,10 @@ void player_task(task_t *s, void *ctx)
       g_ui_ctx.audio_info.channels = pctx->wavctrl->nchannels;
       g_ui_ctx.info_upd_flag = 1;
       g_ui_ctx.audio_info.filename = pctx->file_name;
+      /* update the cur sec */
+      wav_get_curtime(pctx->file, pctx->wavctrl);
+      g_ui_ctx.audio_info.all_sec = pctx->wavctrl->totsec;
+      g_ui_ctx.audio_info.cur_sec = pctx->wavctrl->cursec;
 
       if (res == 0) {
         if (pctx->wavctrl->bps == 16) {
@@ -306,6 +318,10 @@ void player_task(task_t *s, void *ctx)
           fillnum = buffill((uint8_t *)pctx->output_buf[0], AUDIO_BUFFER_SIZE, pctx->wavctrl->bps);//填充buf1
         }
         I2S_Play_Start();
+        /* update the cur sec */
+        wav_get_curtime(pctx->file, pctx->wavctrl);
+        g_ui_ctx.audio_info.cur_sec = pctx->wavctrl->cursec;
+        
       } else if (pctx->audio_file_type == MP3_FILE) {
 
         //寻找帧同步，返回第一个同步字的位置
@@ -408,6 +424,8 @@ void player_task(task_t *s, void *ctx)
             g_ui_ctx.audio_info.channels = pctx->mp3frameinfo->nChans;
             g_ui_ctx.audio_info.filename = pctx->file_name;
             g_ui_ctx.info_upd_flag = 1;
+            /* get mp3 file cur time */
+            mp3_get_curtime(pctx->file, pctx->mp3frameinfo, &g_ui_ctx.audio_info);
 
             //I2S_AudioFreq_Default = 2，正常的帧，每次都要改速率
             if (pctx->ucfreq >= I2S_AudioFreq_Default)  
@@ -420,6 +438,7 @@ void player_task(task_t *s, void *ctx)
           }
         }//else 解码正常
       
+        mp3_get_curtime(pctx->file, pctx->mp3frameinfo, &g_ui_ctx.audio_info);
         if(pctx->file->fptr == pctx->file->obj.objsize)     //mp3文件读取完成，退出
         {
           debug("END\r\n");
@@ -449,6 +468,13 @@ void player_task(task_t *s, void *ctx)
     I2S_Stop();
     pctx->transferedflag = 1;
     pctx->ucfreq = I2S_AudioFreq_Default;
+    /* for update the prog and time */
+    if (pctx->audio_file_type == MP3_FILE) {
+      mp3_get_curtime(pctx->file, pctx->mp3frameinfo, &g_ui_ctx.audio_info);
+    } else if (pctx->audio_file_type == WAV_FILE) {
+      wav_get_curtime(pctx->file, pctx->wavctrl);
+      g_ui_ctx.audio_info.cur_sec = pctx->wavctrl->cursec;
+    }
   }
 }
 /* DMA发送完成中断回调函数 */

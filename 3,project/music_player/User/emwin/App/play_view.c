@@ -64,7 +64,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { FRAMEWIN_CreateIndirect, "play_view", ID_FRAMEWIN_0, 0, 0, 320, 240, 0, 0x0, 0 },
   { PROGBAR_CreateIndirect, "PLAYING", ID_PROGBAR_0, 70, 190, 180, 10, 0, 0x0, 0 },
   { PROGBAR_CreateIndirect, "VOLUME", ID_PROGBAR_1, 20, 50, 8, 90, 1, 0x0, 0 },
-  { TEXT_CreateIndirect, "TITLE", ID_TEXT_0, 85, 45, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "TITLE", ID_TEXT_0, 85, 45, 200, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "VOL", ID_TEXT_1, 9, 150, 30, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "BITRATE", ID_TEXT_2, 85, 115, 150, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "SAMPLERATE", ID_TEXT_3, 85, 85, 150, 20, 0, 0x0, 0 },
@@ -113,6 +113,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
     TEXT_SetTextAlign(hItem, GUI_TA_HCENTER | GUI_TA_VCENTER);
     // USER START (Optionally insert additional code for further widget initialization)
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0); 
+    TEXT_SetText(hItem, "TITLE"); 
+    TEXT_SetFont(hItem, GUI_FONT_16_ASCII); 
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0); 
+    PROGBAR_SetText(hItem, " ");
+    PROGBAR_SetMinMax(hItem, 0, 100); 
+    PROGBAR_SetBarColor(hItem, 0, GUI_YELLOW);
+    PROGBAR_SetBarColor(hItem, 0, GUI_WHITE);
     // USER END
     break;
   // USER START (Optionally insert additional message handling)
@@ -126,6 +135,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   case WM_PAINT:
     break;
   case WM_REFRESH_PLAY_TIME:
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.allsecbuf);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.cursecbuf);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0); 
+    PROGBAR_SetValue(hItem, g_ui_ctx.audio_info.cur_sec * 100 / g_ui_ctx.audio_info.all_sec);
 
     break;
   case WM_REFRESH_PLAY_INFO:

@@ -36,6 +36,7 @@ void gui_task(task_t *s, void *ctx)
   ui_ctx_t *pctx = (ui_ctx_t*) ctx;
   _RETURN_IF_FAIL(pctx);
   static uint32_t  timecnt = 0, last_timecnt = 0;
+  static uint8_t   seek_state = 0, last_seek_state = 0;
 
   if (pctx->current_win == MENU) {
      if (g_key_input_ctx.up_flag == 1) {
@@ -83,9 +84,32 @@ void gui_task(task_t *s, void *ctx)
   } else if (pctx->current_win == PLAYING) {
      //TODO Update the window lyric and bar
      if (g_key_input_ctx.up_flag == 1) {
-       //TODO Fast foward
-     } else if (g_key_input_ctx.down_flag == 1) {
        //TODO Fast backward
+       g_play_ctx.ucstatus = STA_PAUSE;
+       if (g_play_ctx.audio_file_type == MP3_FILE) {
+         if (g_play_ctx.file->fptr > 30 * MP3BUFFER_SIZE) {
+           f_lseek(g_play_ctx.file, f_tell(g_play_ctx.file) - 30 * MP3BUFFER_SIZE);
+         }
+       } else if (g_play_ctx.audio_file_type == WAV_FILE) {
+         if (g_play_ctx.file->fptr > 60 * AUDIO_BUFFER_SIZE) {
+           f_lseek(g_play_ctx.file, f_tell(g_play_ctx.file) - 60 * AUDIO_BUFFER_SIZE);
+         }
+       }
+       seek_state = 1;
+     } else if (g_key_input_ctx.down_flag == 1) {
+       //TODO Fast forward
+       g_play_ctx.ucstatus = STA_PAUSE;
+       if (g_play_ctx.audio_file_type == MP3_FILE) {
+         if (g_play_ctx.file->fptr < g_play_ctx.file->obj.objsize - 30 * MP3BUFFER_SIZE) {
+           f_lseek(g_play_ctx.file, f_tell(g_play_ctx.file) + 30 * MP3BUFFER_SIZE);
+         }
+       } else if (g_play_ctx.audio_file_type == WAV_FILE) {
+         if (g_play_ctx.file->fptr < g_play_ctx.file->obj.objsize - 60 * AUDIO_BUFFER_SIZE) {
+           f_lseek(g_play_ctx.file, f_tell(g_play_ctx.file) + 60 * AUDIO_BUFFER_SIZE);
+         }
+       }
+       seek_state = 1;
+
      } else if (g_key_input_ctx.left_flag == 1) {
        //TODO Select the last object and play
        if (pctx->current_sel != 0) {
@@ -146,14 +170,22 @@ void gui_task(task_t *s, void *ctx)
        WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        pctx->current_win = MENU;
      }
+
+     /* restart the player */
+     if ( last_seek_state == 1 && seek_state == 0) {
+       last_seek_state = 0;
+       g_play_ctx.ucstatus = STA_PLAYING;
+     }
+
+
     timecnt = sched_get_micros(&g_sched);
     if (timecnt - last_timecnt >= 500) {
       last_timecnt = timecnt;
       /* Send refresh the player view msg */
       //TODO refresh the pro bar
       WM_MESSAGE msg;
-      sprintf((char *)audio_info_buffer.cursecbuf, "%d:%2d", pctx->audio_info.cur_sec / 60, pctx->audio_info.cur_sec % 60);
-      sprintf((char *)audio_info_buffer.allsecbuf, "%d:%2d", pctx->audio_info.all_sec / 60, pctx->audio_info.all_sec % 60);
+      sprintf((char *)audio_info_buffer.cursecbuf, "%d:%02d", pctx->audio_info.cur_sec / 60, pctx->audio_info.cur_sec % 60);
+      sprintf((char *)audio_info_buffer.allsecbuf, "%d:%02d", pctx->audio_info.all_sec / 60, pctx->audio_info.all_sec % 60);
       msg.MsgId = WM_REFRESH_PLAY_TIME;
       WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
 
@@ -162,6 +194,7 @@ void gui_task(task_t *s, void *ctx)
     }
   }
 
+  /* first play update the file information */
   if (pctx->info_upd_flag == 1) {
     WM_MESSAGE msg;
     sprintf((char *)audio_info_buffer.bitratebuf, "BITRATE: %d Bps", pctx->audio_info.bitrate);
@@ -173,6 +206,8 @@ void gui_task(task_t *s, void *ctx)
 
   GUI_Exec();
   /* Reset the flag */
+  last_seek_state = seek_state;
+  seek_state = 0;
   g_key_input_ctx.vol_up_falg = 0;
   g_key_input_ctx.vol_down_flag = 0;
   g_key_input_ctx.back_flag = 0;
