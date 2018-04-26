@@ -123,6 +123,12 @@ void gui_task(task_t *s, void *ctx)
              __func__,
              g_play_ctx.file_name);
 
+     } else if (g_key_input_ctx.mid_flag == 1) {
+         if (g_play_ctx.ucstatus == STA_PLAYING) {
+           g_play_ctx.ucstatus = STA_PAUSE;
+         } else if (g_play_ctx.ucstatus == STA_PAUSE) {
+           g_play_ctx.ucstatus = STA_PLAYING;
+         }
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
        //TODO Set the volume up and update the window

@@ -78,7 +78,7 @@ void ff_refresh_music_file(music_process_t *s)
 {
   FRESULT res;
   UINT i = 0;
-  char *file_seperate;
+//  char *file_seperate;
   static FILINFO fno;
 
   res = ff_open_dir(s);

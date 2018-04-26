@@ -298,6 +298,7 @@ void player_task(task_t *s, void *ctx)
         } else {
           fillnum = buffill((uint8_t *)pctx->output_buf[0], AUDIO_BUFFER_SIZE, wav_ctrl.bps);//填充buf1
         }
+        I2S_Play_Start();
       } else if (pctx->audio_file_type == MP3_FILE) {
 
         //寻找帧同步，返回第一个同步字的位置
@@ -429,6 +430,10 @@ void player_task(task_t *s, void *ctx)
       pctx->audio_file_type = WAV_FILE;
     }
     pctx->ucstatus = STA_SW;
+  } else if (pctx->ucstatus == STA_PAUSE) {
+    I2S_Stop();
+    pctx->transferedflag = 1;
+    pctx->ucfreq = I2S_AudioFreq_Default;
   }
 }
 /* DMA发送完成中断回调函数 */

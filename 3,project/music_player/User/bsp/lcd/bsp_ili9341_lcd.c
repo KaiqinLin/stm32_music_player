@@ -697,7 +697,7 @@ void ILI9341_Fill( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHeig
 {
   uint16_t i, j;
   uint16_t xlen = 0;
-  uint16_t temp;
+//  uint16_t temp;
 
   xlen = usWidth - usX + 1;
   for (i = usY; i <= usHeight; i++) {

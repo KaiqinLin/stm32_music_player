@@ -30,6 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 #include "./lcd/bsp_xpt2046_lcd.h"
+#include "./systick/bsp_SysTick.h"
 
 
 /** @addtogroup Template_Project

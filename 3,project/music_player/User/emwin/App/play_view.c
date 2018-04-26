@@ -30,10 +30,16 @@
 *
 **********************************************************************
 */
-#define ID_FRAMEWIN_0 (GUI_ID_USER + 0x00)
-#define ID_PROGBAR_0 (GUI_ID_USER + 0x01)
-#define ID_PROGBAR_1 (GUI_ID_USER + 0x02)
-#define ID_TEXT_0 (GUI_ID_USER + 0x03)
+#define ID_FRAMEWIN_0      (GUI_ID_USER + 0x00)
+#define ID_PROGBAR_0      (GUI_ID_USER + 0x01)
+#define ID_PROGBAR_1      (GUI_ID_USER + 0x02)
+#define ID_TEXT_0      (GUI_ID_USER + 0x03)
+#define ID_TEXT_1      (GUI_ID_USER + 0x04)
+#define ID_TEXT_2      (GUI_ID_USER + 0x05)
+#define ID_TEXT_3      (GUI_ID_USER + 0x06)
+#define ID_TEXT_4      (GUI_ID_USER + 0x07)
+#define ID_TEXT_5      (GUI_ID_USER + 0x08)
+#define ID_TEXT_6      (GUI_ID_USER + 0x09)
 
 
 // USER START (Optionally insert additional defines)
@@ -58,6 +64,12 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { PROGBAR_CreateIndirect, "PLAYING", ID_PROGBAR_0, 70, 190, 180, 10, 0, 0x0, 0 },
   { PROGBAR_CreateIndirect, "VOLUME", ID_PROGBAR_1, 20, 50, 8, 90, 1, 0x0, 0 },
   { TEXT_CreateIndirect, "TITLE", ID_TEXT_0, 85, 20, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "VOL", ID_TEXT_1, 9, 150, 30, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "bitrate", ID_TEXT_2, 85, 90, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "samprate", ID_TEXT_3, 85, 60, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "channel", ID_TEXT_4, 85, 120, 150, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "time", ID_TEXT_5, 260, 185, 30, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "cur", ID_TEXT_6, 30, 185, 30, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
