@@ -6,6 +6,7 @@
 #include "file_view.h"
 #include "play_view.h"
 #include "ff.h"
+#include "./wm8978/bsp_wm8978.h"
 
 WM_HWIN g_page[2];
 
@@ -75,10 +76,21 @@ void gui_task(task_t *s, void *ctx)
 //       WM_HideWindow(g_page[1]);
 //       WM_ShowWindow(g_page[0]);
        //TODO Back to the playing window
+     } else if (g_key_input_ctx.menu_flag == 1) {
+       wm8978_CfgAudioPath(DAC_ON, OUT_PATH_OFF);
+       wm8978_CfgAudioPath(DAC_ON, SPK_ON);
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
+       if (g_play_ctx.ucvolume <= 58 ) {
+         g_play_ctx.ucvolume += 5;
+         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+       }
        //TODO Set the volume up
      } else if (g_key_input_ctx.vol_down_flag == 1) {
+       if (g_play_ctx.ucvolume >= 5 ) {
+         g_play_ctx.ucvolume -= 5;
+         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+       }
        //TODO Set the volume down
      }
   } else if (pctx->current_win == PLAYING) {
@@ -157,8 +169,16 @@ void gui_task(task_t *s, void *ctx)
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
        //TODO Set the volume up and update the window
+       if (g_play_ctx.ucvolume <= 58 ) {
+         g_play_ctx.ucvolume += 5;
+         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+       }
      } else if (g_key_input_ctx.vol_down_flag == 1) {
        //TODO Set the volume down and update the window
+       if (g_play_ctx.ucvolume >= 5 ) {
+         g_play_ctx.ucvolume -= 5;
+         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+       }
      }
      if (g_key_input_ctx.menu_flag == 1) {
        //TODO Switch window

@@ -32,7 +32,7 @@ void key_input_task(task_t *s, void *ctx)
     pctx->menu_flag = 1;
   }
   if (KEY_RIGHT_READ) {
-//    pctx->right_flag = 1;
+    pctx->right_flag = 1;
   }
   if (KEY_DOWN_READ) {
     pctx->down_flag = 1;
