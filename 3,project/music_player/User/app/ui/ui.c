@@ -7,6 +7,7 @@
 #include "play_view.h"
 #include "ff.h"
 #include "./wm8978/bsp_wm8978.h"
+#include "./led/bsp_led.h"
 
 WM_HWIN g_page[2];
 
@@ -23,6 +24,8 @@ void sys_gui_init(task_t *s, void *ctx)
      debug("%s\r\n", g_music_process.music_content[i]);
   }
 
+  sprintf((char *)g_play_ctx.file_name,"0:/%s",g_music_process.music_content[g_ui_ctx.current_sel]);
+  sprintf((char *)audio_info_buffer.volbuf, "%d", g_play_ctx.ucvolume);
   g_page[0] = Createplay_view();
   g_page[1] = Createfile_view();
   WM_HideWindow(g_page[1]);
@@ -78,18 +81,47 @@ void gui_task(task_t *s, void *ctx)
        //TODO Back to the playing window
      } else if (g_key_input_ctx.menu_flag == 1) {
        wm8978_CfgAudioPath(DAC_ON, OUT_PATH_OFF);
-       wm8978_CfgAudioPath(DAC_ON, SPK_ON);
+       if (g_play_ctx.outpath == SPK_ON) {
+         wm8978_SetOUT2Volume(0);
+         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         g_play_ctx.outpath = EAR_LEFT_ON | EAR_RIGHT_ON;
+         wm8978_CfgAudioPath(DAC_ON, g_play_ctx.outpath);
+       } else {
+         wm8978_SetOUT1Volume(0);
+         wm8978_SetOUT2Volume(g_play_ctx.ucvolume * 1.5);
+         g_play_ctx.outpath = SPK_ON;
+         wm8978_CfgAudioPath(DAC_ON, g_play_ctx.outpath);
+       }
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
-       if (g_play_ctx.ucvolume <= 58 ) {
+       if (g_play_ctx.ucvolume <= 35 ) {
+         WM_MESSAGE msg;
+
          g_play_ctx.ucvolume += 5;
-         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         if (g_play_ctx.outpath == SPK_ON) {
+           wm8978_SetOUT2Volume(g_play_ctx.ucvolume);
+         } else {
+           wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         }
+
+         sprintf((char *)audio_info_buffer.volbuf, "%d", g_play_ctx.ucvolume);
+         msg.MsgId = WM_VOL_CTRL;
+         WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        }
        //TODO Set the volume up
      } else if (g_key_input_ctx.vol_down_flag == 1) {
        if (g_play_ctx.ucvolume >= 5 ) {
+         WM_MESSAGE msg;
          g_play_ctx.ucvolume -= 5;
-         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         if (g_play_ctx.outpath == SPK_ON) {
+           wm8978_SetOUT2Volume(g_play_ctx.ucvolume * 1.5);
+         } else {
+           wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         }
+
+         sprintf((char *)audio_info_buffer.volbuf, "%d", g_play_ctx.ucvolume);
+         msg.MsgId = WM_VOL_CTRL;
+         WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        }
        //TODO Set the volume down
      }
@@ -169,15 +201,34 @@ void gui_task(task_t *s, void *ctx)
      }
      if (g_key_input_ctx.vol_up_falg == 1) {
        //TODO Set the volume up and update the window
-       if (g_play_ctx.ucvolume <= 58 ) {
+       if (g_play_ctx.ucvolume <= 35 ) {
+         WM_MESSAGE msg;
+
          g_play_ctx.ucvolume += 5;
-         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         if (g_play_ctx.outpath == SPK_ON) {
+           wm8978_SetOUT2Volume(g_play_ctx.ucvolume * 1.5);
+         } else {
+           wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         }
+
+         sprintf((char *)audio_info_buffer.volbuf, "%d", g_play_ctx.ucvolume);
+         msg.MsgId = WM_VOL_CTRL;
+         WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        }
      } else if (g_key_input_ctx.vol_down_flag == 1) {
        //TODO Set the volume down and update the window
        if (g_play_ctx.ucvolume >= 5 ) {
+         WM_MESSAGE msg;
          g_play_ctx.ucvolume -= 5;
-         wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         if (g_play_ctx.outpath == SPK_ON) {
+           wm8978_SetOUT2Volume(g_play_ctx.ucvolume * 1.5);
+         } else {
+           wm8978_SetOUT1Volume(g_play_ctx.ucvolume);
+         }
+
+         sprintf((char *)audio_info_buffer.volbuf, "%d", g_play_ctx.ucvolume);
+         msg.MsgId = WM_VOL_CTRL;
+         WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
        }
      }
      if (g_key_input_ctx.menu_flag == 1) {
@@ -204,10 +255,31 @@ void gui_task(task_t *s, void *ctx)
       /* Send refresh the player view msg */
       //TODO refresh the pro bar
       WM_MESSAGE msg;
+      RTC_TimeTypeDef RTC_TimeStruct;
+      RTC_DateTypeDef RTC_DateStruct;
+
+      RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
+      RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
+
+      sprintf((char *)audio_info_buffer.rtc_time, "20%02d-%02d-%02d %02d:%02d:%02d",
+              RTC_DateStruct.RTC_Year, RTC_DateStruct.RTC_Month, RTC_DateStruct.RTC_Date,
+              RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds);
       sprintf((char *)audio_info_buffer.cursecbuf, "%d:%02d", pctx->audio_info.cur_sec / 60, pctx->audio_info.cur_sec % 60);
       sprintf((char *)audio_info_buffer.allsecbuf, "%d:%02d", pctx->audio_info.all_sec / 60, pctx->audio_info.all_sec % 60);
       msg.MsgId = WM_REFRESH_PLAY_TIME;
       WM_SendMessage(WM_GetClientWindow(g_page[0]), &msg);
+
+      if (CHRG_READ) {
+         GPIO_ResetBits(LED1_GPIO_Port, LED1_Pin);
+      } else {
+         GPIO_SetBits(LED1_GPIO_Port, LED1_Pin);
+      }
+      
+      if (STDBY_READ) {
+         GPIO_ResetBits(LED0_GPIO_Port, LED0_Pin);
+      } else {
+         GPIO_SetBits(LED0_GPIO_Port, LED0_Pin);
+      }
 
     } else {
 

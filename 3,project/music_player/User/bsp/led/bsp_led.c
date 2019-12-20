@@ -6,18 +6,29 @@ void LED_GPIO_Config(void)
   RCC_AHB1PeriphClockCmd(LED0_GPIO_Clk |
                          LED1_GPIO_Clk, ENABLE);
 
+  RCC_AHB1PeriphClockCmd(BAT_CHRG_GPIO_Clk |
+                         BAT_STDBY_GPIO_Clk, ENABLE);
+
   GPIO_InitStructure.GPIO_Pin = LED0_Pin;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;   
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(LED0_GPIO_Port, &GPIO_InitStructure);
 
-  
   GPIO_InitStructure.GPIO_Pin = LED1_Pin;
   GPIO_Init(LED1_GPIO_Port, &GPIO_InitStructure);
 
   GPIO_SetBits(LED0_GPIO_Port, LED0_Pin);
   GPIO_SetBits(LED1_GPIO_Port, LED1_Pin);
+
+  GPIO_InitStructure.GPIO_Pin = BAT_CHRG_N_Pin;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(BAT_CHRG_N_Port, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = BAT_STDBY_N_Pin;
+  GPIO_Init(BAT_STDBY_N_Port, &GPIO_InitStructure);
+
 }
 
 

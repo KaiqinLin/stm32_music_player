@@ -19,6 +19,7 @@
 #include "./player/player.h"
 #include "./key/key_input.h"
 #include "./ui/ui.h"
+#include "./rtc/bsp_rtc.h"
 //#include "./player/wavplay.h"
 //#include "./player/music_player.h"
 
@@ -28,13 +29,14 @@
 /**************** Global varialbles ******************/
 FATFS fs;
 
+
 /**************** Task array        ******************/
 task_t task_array[] = 
 {
 //   {player_task,       (uint8_t *)"player_task", 70, 9, 0, &g_play_ctx},
 
    {key_input_task,    (uint8_t *)"key_task",      5, 1, 0, &g_key_input_ctx},
-   {gui_task,          (uint8_t *)"gui_task",      5, 5, 0, &g_ui_ctx}
+   {gui_task,          (uint8_t *)"gui_task",      5, 5, 0, &g_ui_ctx},
 };
 
 
@@ -52,6 +54,7 @@ void bsp_init(void)
   LED_GPIO_Config();
   Key_GPIO_Config();
   SysTick_Init();
+  RTC_Config();
 //  TIMx_Configuration(&GUI_TOUCH_Exec);
   /* Initialize th xpt2046 and ili9341 as also as the periph */
 //  LCD_Init();

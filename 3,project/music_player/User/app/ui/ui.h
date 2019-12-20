@@ -36,6 +36,7 @@ typedef struct _audio_info_buffer_t {
   uint8_t   cursecbuf[10];
   uint8_t   allsecbuf[10];
   uint8_t   volbuf[8];
+  uint8_t   rtc_time[100];
 } audio_info_buffer_t;
 
 

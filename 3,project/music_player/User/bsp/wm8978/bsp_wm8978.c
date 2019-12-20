@@ -230,7 +230,10 @@ void wm8978_SetOUT1Volume(uint8_t _ucVolume)
 
   regL = _ucVolume;
   regR = _ucVolume;
-
+  if ( _ucVolume == 0) {
+    regL |= 1 << 6;
+    regR |= 1 << 6;
+  }
   /*
     R52  LOUT1 Volume control
     R53  ROUT1 Volume control
@@ -256,6 +259,11 @@ void wm8978_SetOUT2Volume(uint8_t _ucVolume)
   if (_ucVolume > VOLUME_MAX)
   {
     _ucVolume = VOLUME_MAX;
+  }
+
+  if ( _ucVolume == 0) {
+    regL |= 1 << 6;
+    regR |= 1 << 6;
   }
 
   regL = _ucVolume;

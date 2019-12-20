@@ -100,7 +100,8 @@ void player_init(task_t *s, void *ctx)
   wm8978_Reset();    /* 复位WM8978到复位状态 */
 
   /* 配置WM8978芯片，输入为DAC，输出为耳机 */
-  wm8978_CfgAudioPath(DAC_ON, EAR_LEFT_ON | EAR_RIGHT_ON);
+  pctx->outpath = EAR_LEFT_ON | EAR_RIGHT_ON;
+  wm8978_CfgAudioPath(DAC_ON, pctx->outpath);
 
   /* 调节音量，左右相同音量 */
   wm8978_SetOUT1Volume(pctx->ucvolume);

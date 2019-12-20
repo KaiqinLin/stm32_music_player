@@ -3,6 +3,7 @@
 #include "DIALOG.h"
 #include "./ui/ui.h"
 #include "file_view.h"
+#include "./player/player.h"
 
 extern WM_HWIN g_page[2];
 

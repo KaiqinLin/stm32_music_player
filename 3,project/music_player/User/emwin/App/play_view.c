@@ -113,8 +113,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
     TEXT_SetTextAlign(hItem, GUI_TA_HCENTER | GUI_TA_VCENTER);
     // USER START (Optionally insert additional code for further widget initialization)
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
+    TEXT_SetTextAlign(hItem, GUI_TA_HCENTER | GUI_TA_VCENTER);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.volbuf);
+
+
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0); 
-    TEXT_SetText(hItem, "TITLE"); 
+    TEXT_SetText(hItem, (char *)g_ui_ctx.audio_info.filename);
     TEXT_SetFont(hItem, GUI_FONT_16_ASCII); 
 
     hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0); 
@@ -122,6 +127,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     PROGBAR_SetMinMax(hItem, 0, 100); 
     PROGBAR_SetBarColor(hItem, 0, GUI_YELLOW);
     PROGBAR_SetBarColor(hItem, 0, GUI_WHITE);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_1); 
+    PROGBAR_SetText(hItem, " ");
+    PROGBAR_SetMinMax(hItem, 0, 40); 
+    PROGBAR_SetBarColor(hItem, 0, GUI_YELLOW);
+    PROGBAR_SetBarColor(hItem, 0, GUI_WHITE);
+    PROGBAR_SetValue(hItem, g_play_ctx.ucvolume);
     // USER END
     break;
   // USER START (Optionally insert additional message handling)
@@ -135,6 +147,9 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   case WM_PAINT:
     break;
   case WM_REFRESH_PLAY_TIME:
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_7);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.rtc_time);
 
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
     TEXT_SetText(hItem, (char *)audio_info_buffer.allsecbuf);
@@ -158,6 +173,14 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
     TEXT_SetText(hItem, (char *)audio_info_buffer.channelbuf);
+    break;
+  case WM_VOL_CTRL:
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
+    TEXT_SetText(hItem, (char *)audio_info_buffer.volbuf);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_1); 
+    PROGBAR_SetValue(hItem, g_play_ctx.ucvolume);
+
     break;
   // USER END
   default:

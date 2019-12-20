@@ -116,6 +116,7 @@ typedef struct _player_ctx_t {
   MP3FrameInfo  *mp3frameinfo;
   __IO uint8_t   transferedflag;
   __IO uint8_t   bufferflag;
+  uint8_t        outpath;
 } player_ctx_t;
 
 extern player_ctx_t    g_play_ctx;
